@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REPORT M114</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-300 min-h-screen">
+
+<header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50">
+  REPORT M114
+</header>
+
+<main class="max-w-6xl mx-auto p-4">
+
+<input id="search" placeholder="Cari ERO..."
+class="w-full mb-4 p-2 rounded shadow"
+oninput="filterItems()" />
+
+<!-- TOTAL STORE -->
+<div class="hidden md:block bg-white rounded-xl shadow-xl overflow-x-auto mb-5">
+<table class="w-full text-sm border">
+<thead class="bg-gray-100">
+<tr>
+  <th class="border py-2">STORE</th>
+  <th class="border py-2">TARGET</th>
+  <th class="border py-2">QTY</th>
+  <th class="border py-2">VALUE</th>
+  <th class="border py-2">TARGET/DAY</th>
+  <th class="border py-2">ACV</th>
+</tr>
+</thead>
+<tbody id="desktop2"></tbody>
+</table>
+</div>
+
+<!-- DETAIL ERO -->
+<div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+<table class="w-full text-sm border">
+<thead class="bg-gray-100">
+<tr>
+  <th class="border p-2">ERO</th>
+  <th class="border p-2">TARGET</th>
+  <th class="border p-2">QTY</th>
+  <th class="border p-2">VALUE</th>
+  <th class="border p-2">TARGET/DAY</th>
+  <th class="border p-2">ACV</th>
+</tr>
+</thead>
+<tbody id="desktop"></tbody>
+</table>
+</div>
+
+<!-- MOBILE -->
+ <div id="mobile-store" class="md:hidden mb-4"></div>
+<div id="mobile" class="md:hidden space-y-3"></div>
+
+</main>
+
+<script>
+/* ================= CONFIG ================= */
+const CSV_URL =
+"https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
+
+/* ================= ELEMENT ================= */
+const desktop2 = document.getElementById("desktop2");
+const desktop = document.getElementById("desktop");
+const mobileStore = document.getElementById("mobile-store")
+const mobile = document.getElementById("mobile");
+const search = document.getElementById("search");
+
+/* ================= HELPER ================= */
+const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
+const num = v => Number(String(v || 0).replace(/[^0-9-]/g, ""));
+
+/* ================= FILTER ================= */
+function filterItems(){
+  const q = search.value.toLowerCase();
+  [...desktop.rows].forEach(r=>{
+    r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
+  });
+}
+
+/* ================= LOAD DATA ================= */
+fetch(CSV_URL)
+.then(r => r.text())
+.then(text => {
+
+  const lines = text
+    .split("\n")
+    .map(l => l.trim())
+    .filter(l => l && !/^\d+$/.test(l)); // buang "3", "28"
+
+  const headerIndex = lines.findIndex(l => l.startsWith("ERO"));
+  if (headerIndex === -1) throw "Header ERO tidak ditemukan";
+
+  const dataLines = lines.slice(headerIndex + 1);
+
+  let totalTarget = 0;
+  let totalQty = 0;
+  let totalValue = 0;
+  let totalTargetDay = 0;
+
+  dataLines.forEach(line => {
+    const cols = line.split("\t");
+    if (cols.length < 6) return;
+
+    const [ero, target, qty, value, targetDay, acv] = cols;
+
+    if (!ero) return;
+
+    totalTarget += num(target);
+    totalQty += num(qty);
+    totalValue += num(value);
+    totalTargetDay += num(targetDay);
+
+    const warna = num(targetDay) < 0
+      ? "text-red-600 font-semibold"
+      : "text-green-600 font-semibold";
+
+    desktop.innerHTML += `
+      <tr class="text-center hover:bg-gray-50">
+        <td class="border p-2 font-semibold">${ero}</td>
+        <td class="border p-2">${rupiah(num(target))}</td>
+        <td class="border p-2">${qty}</td>
+        <td class="border p-2">${rupiah(num(value))}</td>
+        <td class="border p-2 ${warna}">${rupiah(num(targetDay))}</td>
+        <td class="border p-2">${acv}</td>
+      </tr>
+    `;
+
+   
+
+    mobile.innerHTML += `
+      <div class="bg-white p-4 rounded-xl shadow-xl hover:bg-red-600 hover:text-white transition">
+        <div class="font-bold text-lg">${ero}</div>
+        <div>🎯 ${rupiah(num(target))}</div>
+        <div>📦 Qty: ${qty}</div>
+        <div>💰 ${rupiah(num(value))}</div>
+        <div class="${warna}">📉 ${rupiah(num(targetDay))}</div>
+        <div>📊 ACV: ${acv}</div>
+      </div>
+      
+    `;
+  });
+
+  
+
+  const acvTotal = totalTarget > 0
+    ? ((totalValue / totalTarget) * 100).toFixed(2) + "%"
+    : "0%";
+
+  const warnaTotal = totalTargetDay < 0
+    ? "text-red-600 font-bold"
+    : "text-green-600 font-bold";
+
+  desktop2.innerHTML = `
+    <tr class="text-center bg-gray-50">
+      <td class="border py-2 font-bold">M114</td>
+      <td class="border p-2">${rupiah(totalTarget)}</td>
+      <td class="border p-2">${totalQty}</td>
+      <td class="border p-2">${rupiah(totalValue)}</td>
+      <td class="border p-2 ${warnaTotal}">${rupiah(totalTargetDay)}</td>
+      <td class="border p-2 font-bold">${acvTotal}</td>
+    </tr>
+  `
+  
+   mobileStore.innerHTML += `
+    <div class ="bg-white p-4 rounded-xl shadow-xl border">
+        <div class = "font-bold text-lg mb-2">STORE M114 </div>
+         <div>🎯 Target: ${rupiah(totalTarget)}</div>
+    <div>📦 Qty: ${totalQty}</div>
+    <div>💰 Value: ${rupiah(totalValue)}</div>
+    <div class="${warnaTotal}">
+      📉 Target/Day: ${rupiah(totalTargetDay)}
+    </div>
+    <div class="font-bold mt-1">
+      📊 ACV: ${acvTotal}
+    </div>
+  </div>
+    `;
+})
+.catch(err => {
+  console.error(err);
+});
+</script>
+
+</body>
+</html>

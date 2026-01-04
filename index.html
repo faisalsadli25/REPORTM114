@@ -7,7 +7,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-300 min-h-screen">
+<body class="bg-gray-100 min-h-screen font-sans">
 
 <header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50">
   REPORT M114
@@ -15,176 +15,207 @@
 
 <main class="max-w-6xl mx-auto p-4">
 
-<input id="search" placeholder="Cari ERO..."
-class="w-full mb-4 p-2 rounded shadow"
+<input id="search" placeholder="Cari..."
+class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
 oninput="filterItems()" />
 
-<!-- TOTAL STORE -->
-<div class="hidden md:block bg-white rounded-xl shadow-xl overflow-x-auto mb-5">
-<table class="w-full text-sm border">
-<thead class="bg-gray-100">
-<tr>
-  <th class="border py-2">STORE</th>
-  <th class="border py-2">TARGET</th>
-  <th class="border py-2">QTY</th>
-  <th class="border py-2">VALUE</th>
-  <th class="border py-2">TARGET/DAY</th>
-  <th class="border py-2">ACV</th>
-</tr>
-</thead>
-<tbody id="desktop2"></tbody>
-</table>
+<!-- ================= STORE ================= -->
+<div class="mb-5">
+  <div class="hidden md:block bg-white rounded-xl shadow-xl overflow-x-auto">
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border p-2">STORE</th>
+          <th class="border p-2">TARGET</th>
+          <th class="border p-2">QTY</th>
+          <th class="border p-2">VALUE</th>
+          <th class="border p-2">TARGET/DAY</th>
+          <th class="border p-2">ACV</th>
+        </tr>
+      </thead>
+      <tbody id="store"></tbody>
+    </table>
+  </div>
+  <div id="storeMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 </div>
 
-<!-- DETAIL ERO -->
-<div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
-<table class="w-full text-sm border">
-<thead class="bg-gray-100">
-<tr>
-  <th class="border p-2">ERO</th>
-  <th class="border p-2">TARGET</th>
-  <th class="border p-2">QTY</th>
-  <th class="border p-2">VALUE</th>
-  <th class="border p-2">TARGET/DAY</th>
-  <th class="border p-2">ACV</th>
-</tr>
-</thead>
-<tbody id="desktop"></tbody>
-</table>
+<!-- ================= ERO ================= -->
+<div class="mb-5">
+  <div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto">
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border p-2">ERO</th>
+          <th class="border p-2">TARGET</th>
+          <th class="border p-2">QTY</th>
+          <th class="border p-2">VALUE</th>
+          <th class="border p-2">TARGET/DAY</th>
+          <th class="border p-2">ACV</th>
+        </tr>
+      </thead>
+      <tbody id="ero"></tbody>
+    </table>
+  </div>
+  <div id="eroMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
 </div>
 
-<!-- MOBILE -->
- <div id="mobile-store" class="md:hidden mb-4"></div>
-<div id="mobile" class="md:hidden space-y-3"></div>
+<!-- ================= PROMOTOR ================= -->
+<div class="mb-5">
+  <div class="hidden md:block bg-white rounded-xl shadow-xl overflow-x-auto">
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border p-2">PROMOTOR</th>
+          <th class="border p-2">TARGET</th>
+          <th class="border p-2">QTY</th>
+          <th class="border p-2">VALUE</th>
+          <th class="border p-2">TARGET/DAY</th>
+          <th class="border p-2">ACV</th>
+        </tr>
+      </thead>
+      <tbody id="promotor"></tbody>
+    </table>
+  </div>
+  <div id="promotorMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+</div>
+
+<!-- ================= FINANCING ================= -->
+<div class="mb-5">
+  <div class="hidden md:block bg-white rounded-xl overflow-x-auto">
+    <table class="w-full text-sm border">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="border p-2">FINANCING</th>
+          <th class="border p-2">TARGET</th>
+          <th class="border p-2">QTY</th>
+          <th class="border p-2">VALUE</th>
+          <th class="border p-2">TARGET/DAY</th>
+          <th class="border p-2">ACV</th>
+        </tr>
+      </thead>
+      <tbody id="financing"></tbody>
+    </table>
+  </div>
+  <div id="financingMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+</div>
 
 </main>
 
 <script>
-/* ================= CONFIG ================= */
-const CSV_URL =
-"https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
 
-/* ================= ELEMENT ================= */
-const desktop2 = document.getElementById("desktop2");
-const desktop = document.getElementById("desktop");
-const mobileStore = document.getElementById("mobile-store")
-const mobile = document.getElementById("mobile");
+const storeTbl = document.getElementById("store");
+const eroTbl = document.getElementById("ero");
+const promotorTbl = document.getElementById("promotor");
+const financingTbl = document.getElementById("financing");
+
+const storeMobile = document.getElementById("storeMobile");
+const eroMobile = document.getElementById("eroMobile");
+const promotorMobile = document.getElementById("promotorMobile");
+const financingMobile = document.getElementById("financingMobile");
+
 const search = document.getElementById("search");
 
-/* ================= HELPER ================= */
-const rupiah = n => "Rp " + Number(n || 0).toLocaleString("id-ID");
-const num = v => Number(String(v || 0).replace(/[^0-9-]/g, ""));
-
-/* ================= FILTER ================= */
-function filterItems(){
+function filterItems() {
   const q = search.value.toLowerCase();
-  [...desktop.rows].forEach(r=>{
-    r.style.display = r.innerText.toLowerCase().includes(q) ? "" : "none";
+  [storeMobile, eroMobile, promotorMobile, financingMobile].forEach(container=>{
+    [...container.children].forEach(c=>{
+      c.style.display = c.innerText.toLowerCase().includes(q) ? "" : "none";
+    });
   });
 }
 
-/* ================= LOAD DATA ================= */
 fetch(CSV_URL)
 .then(r => r.text())
 .then(text => {
+  const lines = text.split("\n").map(l=>l.trim()).filter(l=>l && !/^\d+$/.test(l));
 
-  const lines = text
-    .split("\n")
-    .map(l => l.trim())
-    .filter(l => l && !/^\d+$/.test(l)); // buang "3", "28"
+  let mode = "";
 
-  const headerIndex = lines.findIndex(l => l.startsWith("ERO"));
-  if (headerIndex === -1) throw "Header ERO tidak ditemukan";
-
-  const dataLines = lines.slice(headerIndex + 1);
-
-  let totalTarget = 0;
-  let totalQty = 0;
-  let totalValue = 0;
-  let totalTargetDay = 0;
-
-  dataLines.forEach(line => {
+  lines.forEach(line=>{
     const cols = line.split("\t");
-    if (cols.length < 6) return;
+    if(!cols[0]) return;
 
-    const [ero, target, qty, value, targetDay, acv] = cols;
+    const key = cols[0].trim().toUpperCase();
+    if(key === "STORE") { mode = "STORE"; return; }
+    if(key === "ERO") { mode = "ERO"; return; }
+    if(key === "PROMOTOR") { mode = "PROMOTOR"; return; }
+    if(key === "FINANCING") { mode = "FINANCING"; return; }
 
-    if (!ero) return;
+    let row;
+    if(mode === "FINANCING") {
+      const [nama, target, value, targetDay, acv] = cols;
+      row = `
+        <tr class="text-center hover:bg-gray-50">
+          <td class="border p-2 font-semibold">${nama}</td>
+          <td class="border p-2">${target}</td>
+          <td class="border p-2">-</td>
+          <td class="border p-2">${value}</td>
+          <td class="border p-2">${targetDay}</td>
+          <td class="border p-2">${acv}</td>
+        </tr>
+      `;
+      financingTbl.innerHTML += row;
+    } else {
+      const [nama, target, qty, value, targetDay, acv] = cols;
+      row = `
+        <tr class="text-center hover:bg-gray-50">
+          <td class="border p-2 font-semibold">${nama}</td>
+          <td class="border p-2">${target}</td>
+          <td class="border p-2">${qty}</td>
+          <td class="border p-2">${value}</td>
+          <td class="border p-2">${targetDay}</td>
+          <td class="border p-2">${acv}</td>
+        </tr>
+      `;
+      if(mode === "STORE") storeTbl.innerHTML += row;
+      if(mode === "ERO") eroTbl.innerHTML += row;
+      if(mode === "PROMOTOR") promotorTbl.innerHTML += row;
+    }
 
-    totalTarget += num(target);
-    totalQty += num(qty);
-    totalValue += num(value);
-    totalTargetDay += num(targetDay);
+    // Mobile card
+    const card = document.createElement("div");
+    card.className = "p-4 rounded-xl shadow-md hover:shadow-lg transition duration-200";
 
-    const warna = num(targetDay) < 0
-      ? "text-red-600 font-semibold"
-      : "text-green-600 font-semibold";
+    let bgColor = "bg-white";
+    if(mode==="STORE") bgColor="bg-blue-50";
+    if(mode==="ERO") bgColor="bg-green-50";
+    if(mode==="PROMOTOR") bgColor="bg-yellow-50";
+    if(mode==="FINANCING") bgColor="bg-purple-50";
+    card.className += ` ${bgColor}`;
 
-    desktop.innerHTML += `
-      <tr class="text-center hover:bg-gray-50">
-        <td class="border p-2 font-semibold">${ero}</td>
-        <td class="border p-2">${rupiah(num(target))}</td>
-        <td class="border p-2">${qty}</td>
-        <td class="border p-2">${rupiah(num(value))}</td>
-        <td class="border p-2 ${warna}">${rupiah(num(targetDay))}</td>
-        <td class="border p-2">${acv}</td>
-      </tr>
-    `;
-
-   
-
-    mobile.innerHTML += `
-      <div class="bg-white p-4 rounded-xl shadow-xl hover:bg-red-600 hover:text-white transition">
-        <div class="font-bold text-lg">${ero}</div>
-        <div>🎯 ${rupiah(num(target))}</div>
-        <div>📦 Qty: ${qty}</div>
-        <div>💰 ${rupiah(num(value))}</div>
-        <div class="${warna}">📉 ${rupiah(num(targetDay))}</div>
-        <div>📊 ACV: ${acv}</div>
-      </div>
-      
-    `;
+    if(mode==="FINANCING") {
+      const [nama, target, value, targetDay, acv] = cols;
+      card.innerHTML = `
+        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>-</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
+        </div>
+      `;
+      financingMobile.appendChild(card);
+    } else {
+      const [nama, target, qty, value, targetDay, acv] = cols;
+      card.innerHTML = `
+        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>${qty}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
+          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
+        </div>
+      `;
+      if(mode==="STORE") storeMobile.appendChild(card);
+      if(mode==="ERO") eroMobile.appendChild(card.cloneNode(true));
+      if(mode==="PROMOTOR") promotorMobile.appendChild(card.cloneNode(true));
+    }
   });
-
-  
-
-  const acvTotal = totalTarget > 0
-    ? ((totalValue / totalTarget) * 100).toFixed(2) + "%"
-    : "0%";
-
-  const warnaTotal = totalTargetDay < 0
-    ? "text-red-600 font-bold"
-    : "text-green-600 font-bold";
-
-  desktop2.innerHTML = `
-    <tr class="text-center bg-gray-50">
-      <td class="border py-2 font-bold">M114</td>
-      <td class="border p-2">${rupiah(totalTarget)}</td>
-      <td class="border p-2">${totalQty}</td>
-      <td class="border p-2">${rupiah(totalValue)}</td>
-      <td class="border p-2 ${warnaTotal}">${rupiah(totalTargetDay)}</td>
-      <td class="border p-2 font-bold">${acvTotal}</td>
-    </tr>
-  `
-  
-   mobileStore.innerHTML += `
-    <div class ="bg-white p-4 rounded-xl shadow-xl border">
-        <div class = "font-bold text-lg mb-2">STORE M114 </div>
-         <div>🎯 Target: ${rupiah(totalTarget)}</div>
-    <div>📦 Qty: ${totalQty}</div>
-    <div>💰 Value: ${rupiah(totalValue)}</div>
-    <div class="${warnaTotal}">
-      📉 Target/Day: ${rupiah(totalTargetDay)}
-    </div>
-    <div class="font-bold mt-1">
-      📊 ACV: ${acvTotal}
-    </div>
-  </div>
-    `;
 })
-.catch(err => {
-  console.error(err);
-});
+.catch(err=>console.error(err));
 </script>
 
 </body>

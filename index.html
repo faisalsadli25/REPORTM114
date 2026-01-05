@@ -1,222 +1,39 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>REPORT M114</title>
-<script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
 <body class="bg-gray-100 min-h-screen font-sans">
+    <header class="bg-white p-4 font-bold text-xl text-center shadow-xl">
+        SELAMAT DATANG
+    </header>
 
-<header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50">
-  REPORT M114
-</header>
+    <main class="max-w-6xl mx-auto p-4">
+        <div class="max-w-6xl mx-auto grid gird-cols-1 sm:grid-cols-2 gap-3">
+            <div id="target" onclick="goindex()" class="bg-white p-2 aspect-square flex justify-center items-center shadow-xl rounded-xl hover:ring-2 hover:ring-red-950 transition duration-500 cursor-pointer hover:bg-red-950 hover:text-white text-center">
+                <h1 class="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ">CEK TARGET-DAY TIM MAROS</h1>
+            </div>
 
-<main class="max-w-6xl mx-auto p-4">
-
-<input id="search" placeholder="Cari..."
-class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
-oninput="filterItems()" />
-
-<!-- ================= STORE ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transtion duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">STORE</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="store"></tbody>
-    </table>
-  </div>
-  <div id="storeMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-</div>
-
-<!-- ================= ERO ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">ERO</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="ero"></tbody>
-    </table>
-  </div>
-  <div id="eroMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-</div>
-
-<!-- ================= PROMOTOR ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">PROMOTOR</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="promotor"></tbody>
-    </table>
-  </div>
-  <div id="promotorMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-</div>
-
-<!-- ================= FINANCING ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">FINANCING</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="financing"></tbody>
-    </table>
-  </div>
-  <div id="financingMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-</div>
-
-</main>
-
-<script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
-
-const storeTbl = document.getElementById("store");
-const eroTbl = document.getElementById("ero");
-const promotorTbl = document.getElementById("promotor");
-const financingTbl = document.getElementById("financing");
-
-const storeMobile = document.getElementById("storeMobile");
-const eroMobile = document.getElementById("eroMobile");
-const promotorMobile = document.getElementById("promotorMobile");
-const financingMobile = document.getElementById("financingMobile");
-
-const search = document.getElementById("search");
-
-function filterItems() {
-  const q = search.value.toLowerCase();
-  [storeMobile, eroMobile, promotorMobile, financingMobile].forEach(container=>{
-    [...container.children].forEach(c=>{
-      c.style.display = c.innerText.toLowerCase().includes(q) ? "" : "none";
-    });
-  });
-}
-
-fetch(CSV_URL)
-.then(r => r.text())
-.then(text => {
-  const lines = text.split("\n").map(l=>l.trim()).filter(l=>l && !/^\d+$/.test(l));
-
-  let mode = "";
-
-  lines.forEach(line=>{
-    const cols = line.split("\t");
-    if(!cols[0]) return;
-
-    const key = cols[0].trim().toUpperCase();
-    if(key === "STORE") { mode = "STORE"; return; }
-    if(key === "ERO") { mode = "ERO"; return; }
-    if(key === "PROMOTOR") { mode = "PROMOTOR"; return; }
-    if(key === "FINANCING") { mode = "FINANCING"; return; }
-
-    let row;
-    if(mode === "FINANCING") {
-      const [nama, target, value, targetDay, acv] = cols;
-      row = `
-        <tr class="text-center hover:bg-gray-50">
-          <td class="border p-2 font-semibold">${nama}</td>
-          <td class="border p-2">${target}</td>
-          <td class="border p-2">-</td>
-          <td class="border p-2">${value}</td>
-          <td class="border p-2">${targetDay}</td>
-          <td class="border p-2">${acv}</td>
-        </tr>
-      `;
-      financingTbl.innerHTML += row;
-    } else {
-      const [nama, target, qty, value, targetDay, acv] = cols;
-      row = `
-        <tr class="text-center hover:bg-gray-50">
-          <td class="border p-2 font-semibold">${nama}</td>
-          <td class="border p-2">${target}</td>
-          <td class="border p-2">${qty}</td>
-          <td class="border p-2">${value}</td>
-          <td class="border p-2">${targetDay}</td>
-          <td class="border p-2">${acv}</td>
-        </tr>
-      `;
-      if(mode === "STORE") storeTbl.innerHTML += row;
-      if(mode === "ERO") eroTbl.innerHTML += row;
-      if(mode === "PROMOTOR") promotorTbl.innerHTML += row;
-    }
-
-    // Mobile card
-    const card = document.createElement("div");
-    card.className = "p-4 rounded-xl shadow-md hover:shadow-lg transition duration-200";
-
-    let bgColor = "bg-white";
-    if(mode==="STORE") bgColor="bg-blue-50";
-    if(mode==="ERO") bgColor="bg-green-50";
-    if(mode==="PROMOTOR") bgColor="bg-yellow-50";
-    if(mode==="FINANCING") bgColor="bg-purple-50";
-    card.className += ` ${bgColor}`;
-
-    if(mode==="FINANCING") {
-      const [nama, target, value, targetDay, acv] = cols;
-      card.innerHTML = `
-        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>-</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
+            <div id="VAS" onclick="goVas()" class="bg-white p-2 aspect-square flex justify-center items-center shadow-xl rounded-xl hover:ring-2 hover:ring-red-950 transition duration-500 cursor-pointer hover:bg-red-950 hover:text-white text-center">
+                <h1 class="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ">CEK VAS</h1>
+            </div>
         </div>
-      `;
-      financingMobile.appendChild(card);
-    } else {
-      const [nama, target, qty, value, targetDay, acv] = cols;
-      card.innerHTML = `
-        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>${qty}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
-        </div>
-      `;
-      if(mode==="STORE") storeMobile.appendChild(card);
-      if(mode==="ERO") eroMobile.appendChild(card.cloneNode(true));
-      if(mode==="PROMOTOR") promotorMobile.appendChild(card.cloneNode(true));
-    }
-  });
-})
-.catch(err=>console.error(err));
-</script>
+    </main>
 
+    <script>
+        function goindex(){
+            document.getElementById('target')
+            window.location.href="target.html"
+        }
+
+        function goVas(){
+            document.getElementById('VAS')
+            window.location.href = "vas.html"
+        }
+
+    </script>
 </body>
 </html>

@@ -1,145 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VAS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAS</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 min-h-screen font-sans">
 
-<!-- HEADER -->
 <header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50 text-center">
     VAS
 </header>
 
-<!-- CONTENT -->
 <main class="max-w-6xl mx-auto p-4">
+    <input id="search" placeholder="cari.." 
+        class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none"/>
 
-    <!-- SEARCH -->
-    <input
-        id="search"
-        placeholder="cari.."
-        class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none hover:ring-4 hover:ring-red-700 transition"
-        oninput="filterItems()"
-    />
-
-    <!-- DESKTOP TABLE -->
-    <div class="hidden md:block bg-white rounded-xl shadow overflow-x-auto mb-6">
+    <!-- TECPROTEC -->
+    <h2 class="font-bold text-lg mb-2">TECPROTEC</h2>
+    <div class="hidden md:block bg-white rounded-xl shadow mb-6">
         <table class="w-full text-sm border">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="border p-2">TECPROTEC</th>
-                    <th class="border p-2">TARGET</th>
-                    <th class="border p-2">QTY</th>
-                    <th class="border p-2">VALUE</th>
-                    <th class="border p-2">TARGET/DAY</th>
+                    <th class="border p-2">Nama</th>
+                    <th class="border p-2">Target</th>
+                    <th class="border p-2">Qty</th>
+                    <th class="border p-2">Value</th>
+                    <th class="border p-2">Target/Day</th>
                     <th class="border p-2">AR</th>
                 </tr>
             </thead>
-            <tbody id="tec"></tbody>
+            <tbody id="tecTable"></tbody>
         </table>
     </div>
+    <div id="tecMobile" class="md:hidden grid gap-4 mb-6"></div>
 
-    <!-- MOBILE CARD -->
-    <div id="tectmobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-
+    <!-- INDOSAT -->
+    <h2 class="font-bold text-lg mb-2">INDOSAT</h2>
+    <div class="hidden md:block bg-white rounded-xl shadow">
+        <table class="w-full text-sm border">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="border p-2">Nama</th>
+                    <th class="border p-2">Target</th>
+                    <th class="border p-2">Qty</th>
+                    <th class="border p-2">Value</th>
+                    <th class="border p-2">Target/Day</th>
+                    <th class="border p-2">AR</th>
+                </tr>
+            </thead>
+            <tbody id="indosatTable"></tbody>
+        </table>
+    </div>
+    <div id="indosatMobile" class="md:hidden grid gap-4"></div>
 </main>
 
-<!-- SCRIPT -->
 <script>
-const CSV_URL =
-"https://docs.google.com/spreadsheets/d/1xqkaqEYBEn_j6Mm_cf2u-2kmLpw9x71yALhdC-pFkO8/export?format=tsv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1xqkaqEYBEn_j6Mm_cf2u-2kmLpw9x71yALhdC-pFkO8/export?format=tsv";
 
-const tecTable = document.getElementById("tec");
-const tecMobile = document.getElementById("tectmobile");
-const searchInput = document.getElementById("search");
+const tecTable = document.getElementById("tecTable");
+const indosatTable = document.getElementById("indosatTable");
+const tecMobile = document.getElementById("tecMobile");
+const indosatMobile = document.getElementById("indosatMobile");
 
-/* ================= MOBILE CARD SATU SAJA ================= */
-const mobileCard = document.createElement("div");
-mobileCard.className =
-"vas-card bg-white p-4 rounded-xl shadow space-y-3";
+let currentGroup = "";
 
-mobileCard.innerHTML=`<h2 class = text-lg font-bold text-center mb-3 border-b pb-2>
-    TECPROTEC</h2>`
+fetch(CSV_URL)
+.then(res => res.text())
+.then(text => {
+    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
 
-/* ================= SEARCH ================= */
-function filterItems() {
-    const q = searchInput.value.toLowerCase();
+    lines.forEach(line => {
+        const cols = line.split("\t");
 
-    document.querySelectorAll(".mobile-row").forEach(row => {
-        row.style.display = row.innerText.toLowerCase().includes(q)
+        // DETEKSI JUDUL TABEL
+        if (cols[0].toUpperCase() === "TECPROTEC") {
+            currentGroup = "TECPROTEC";
+            return;
+        }
+
+        if (cols[0].toUpperCase() === "INDOSAT") {
+            currentGroup = "INDOSAT";
+            return;
+        }
+
+        // SKIP HEADER
+        if (cols[0] === "TARGET") return;
+
+        if (cols.length < 6) return;
+
+        const item = {
+            name: cols[0],
+            target: cols[1],
+            qty: cols[2],
+            value: cols[3],
+            targetDay: cols[4],
+            ar: cols[5]
+        };
+
+        if (currentGroup === "TECPROTEC") {
+            renderRow(item, tecTable);
+            renderCard(item, tecMobile);
+        }
+
+        if (currentGroup === "INDOSAT") {
+            renderRow(item, indosatTable);
+            renderCard(item, indosatMobile);
+        }
+    });
+});
+
+function renderRow(d, table) {
+    table.innerHTML += `
+        <tr>
+            <td class="border p-2">${d.name}</td>
+            <td class="border p-2 text-right">${d.target}</td>
+            <td class="border p-2 text-center">${d.qty}</td>
+            <td class="border p-2 text-right">${d.value}</td>
+            <td class="border p-2 text-right">${d.targetDay}</td>
+            <td class="border p-2 text-center">${d.ar}</td>
+        </tr>
+    `;
+}
+
+function renderCard(d, container) {
+    container.innerHTML += `
+        <div class="bg-white p-4 rounded-xl shadow">
+            <div class="font-bold mb-2">${d.name}</div>
+            <div class="text-sm space-y-1">
+                <div>Target: ${d.target}</div>
+                <div>Qty: ${d.qty}</div>
+                <div>Value: ${d.value}</div>
+                <div>Target/Day: ${d.targetDay}</div>
+                <div>AR: ${d.ar}</div>
+            </div>
+        </div>
+    `;
+}
+
+document.getElementById("search").addEventListener("input", function () {
+    const keyword = this.value.toLowerCase();
+
+    /* ===== DESKTOP TABLE ===== */
+    document.querySelectorAll("tbody tr").forEach(row => {
+        row.style.display = row.innerText.toLowerCase().includes(keyword)
             ? ""
             : "none";
     });
-}
 
-/* ================= FETCH DATA ================= */
-fetch(CSV_URL)
-    .then(res => res.text())
-    .then(text => {
-        const lines = text
-            .split("\n")
-            .map(l => l.trim())
-            .filter(l => l);
-
-        lines.slice(1).forEach(line => {
-            const cols = line.split("\t");
-            if (cols.length < 6) return;
-
-            const item = {
-                tec: cols[0],
-                target: cols[1],
-                qty: cols[2],
-                value: cols[3],
-                targetDay: cols[4],
-                ar: cols[5]
-            };
-
-            renderRow(item);        // desktop
-            renderMobileRow(item);  // mobile (1 card)
-        });
-
-        tecMobile.appendChild(mobileCard);
-    })
-    .catch(err => console.error(err));
-
-/* ================= DESKTOP TABLE ================= */
-function renderRow(d) {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-        <td class="border p-2">${d.tec}</td>
-        <td class="border p-2 text-center">${d.target}</td>
-        <td class="border p-2 text-center">${d.qty}</td>
-        <td class="border p-2 text-right">${d.value}</td>
-        <td class="border p-2 text-center">${d.targetDay}</td>
-        <td class="border p-2 text-center">${d.ar}</td>
-    `;
-    tecTable.appendChild(tr);
-}
-
-/* ================= MOBILE ISI DALAM SATU CARD ================= */
-function renderMobileRow(d) {
-    const row = document.createElement("div");
-    row.className =
-    "mobile-row border-b pb-2 last:border-none text-sm";
-
-    row.innerHTML = `
-        <div class="font-bold mb-1">${d.tec}</div>
-        <div class="grid grid-cols-2 gap-x-4 gap-y-1">
-            <span>Target</span><span class="font-semibold text-right">${d.target}</span>
-            <span>Qty</span><span class="font-semibold text-right">${d.qty}</span>
-            <span>Value</span><span class="font-semibold text-right">${d.value}</span>
-            <span>Target/Day</span><span class="font-semibold text-right">${d.targetDay}</span>
-            <span>AR</span><span class="font-semibold text-right">${d.ar}</span>
-        </div>
-    `;
-
-    mobileCard.appendChild(row);
-}
+    /* ===== MOBILE CARD ===== */
+    document.querySelectorAll(".bg-white.p-4.rounded-xl.shadow").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(keyword)
+            ? ""
+            : "none";
+    });
+});
 </script>
-
 
 </body>
 </html>

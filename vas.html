@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen font-sans">
+
+    <header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50 text-center">
+        VAS 
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4">
+        <input id="search" placeholder="cari.." class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none hover:ring-4 hover:ring-red-700 transition" oninput="filterItems()"/>
+
+        <div class="mb-5">
+            <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
+                <table class="w-full text-sm border">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="border p-2">TECPROTEC</th>
+                            <th class="border p-2">TARGET</th>
+                            <th class="border p-2">QTY</th>
+                            <th class="border p-2">VALUE</th>
+                            <th class="border p-2">TARGET/DAY</th>
+                            <th class="border p-2">AR</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tec"></tbody>
+                </table>
+            </div>
+            <div id="tectmobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+        </div>
+    </main>
+    
+   <script>
+const CSV_URL = "https://docs.google.com/spreadsheets/d/1xqkaqEYBEn_j6Mm_cf2u-2kmLpw9x71yALhdC-pFkO8/export?format=tsv";
+
+const tecTable = document.getElementById("tec");
+const tecMobile = document.getElementById("tectmobile");
+const searchInput = document.getElementById("search");
+
+let dataCache = [];
+
+/* ================= SEARCH ================= */
+function filterItems() {
+    const q = searchInput.value.toLowerCase();
+
+    document.querySelectorAll(".vas-card").forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(q)
+            ? ""
+            : "none";
+    });
+}
+
+/* ================= FETCH ================= */
+fetch(CSV_URL)
+    .then(res => res.text())
+    .then(text => {
+        const lines = text
+            .split("\n")
+            .map(l => l.trim())
+            .filter(l => l);
+
+        lines.slice(1).forEach(line => {
+            const cols = line.split("\t");
+            if (cols.length < 6) return;
+
+            const item = {
+                tec: cols[0],
+                target: cols[1],
+                qty: cols[2],
+                value: cols[3],
+                targetDay: cols[4],
+                ar: cols[5]
+            };
+
+            dataCache.push(item);
+            renderRow(item);
+            renderCard(item);
+        });
+    })
+    .catch(err => console.error("CSV ERROR:", err));
+
+/* ================= DESKTOP TABLE ================= */
+function renderRow(d) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+        <td class="border p-2">${d.tec}</td>
+        <td class="border p-2 text-center">${d.target}</td>
+        <td class="border p-2 text-center">${d.qty}</td>
+        <td class="border p-2 text-right">${d.value}</td>
+        <td class="border p-2 text-center">${d.targetDay}</td>
+        <td class="border p-2 text-center">${d.ar}</td>
+    `;
+    tecTable.appendChild(tr);
+}
+
+/* ================= MOBILE CARD ================= */
+function renderCard(d) {
+    const card = document.createElement("div");
+    card.className = "vas-card bg-white p-4 rounded-xl shadow hover:shadow-lg transition";
+
+    card.innerHTML = `
+        <h2 class="font-bold text-lg mb-2">${d.tec}</h2>
+        <div class="text-sm space-y-1">
+            <p><b>Target:</b> ${d.target}</p>
+            <p><b>Qty:</b> ${d.qty}</p>
+            <p><b>Value:</b> ${d.value}</p>
+            <p><b>Target/Day:</b> ${d.targetDay}</p>
+            <p><b>AR:</b> ${d.ar}</p>
+        </div>
+    `;
+
+    tecMobile.appendChild(card);
+}
+</script>
+
+</body>
+</html>

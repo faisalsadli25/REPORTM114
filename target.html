@@ -9,213 +9,196 @@
 
 <body class="bg-gray-100 min-h-screen font-sans">
 
-<header class="bg-white shadow p-4 font-bold text-xl sticky top-0 z-50">
-  REPORT M114
+<!-- HEADER -->
+<header class="bg-white shadow sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto p-4 text-center font-bold text-xl">
+    REPORT M114
+  </div>
 </header>
 
 <main class="max-w-6xl mx-auto p-4">
 
-<input id="search" placeholder="Cari..."
-class="w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
+<!-- SEARCH -->
+<input id="search" placeholder="Cari store / nama..."
+class="w-full mb-6 p-3 rounded-xl shadow focus:outline-none focus:ring-2 focus:ring-indigo-400"
 oninput="filterItems()" />
 
 <!-- ================= STORE ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transtion duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">STORE</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="store"></tbody>
-    </table>
-  </div>
-  <div id="storeMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+<section class="mb-8">
+<h2 class="font-bold text-lg mb-3 text-blue-600">STORE</h2>
+
+<div class="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
+<table class="w-full text-sm border">
+<thead class="bg-blue-600 text-white">
+<tr>
+<th class="border p-2">STORE</th>
+<th class="border p-2">TARGET</th>
+<th class="border p-2">QTY</th>
+<th class="border p-2">VALUE</th>
+<th class="border p-2">TARGET/DAY</th>
+<th class="border p-2">ACV</th>
+</tr>
+</thead>
+<tbody id="store"></tbody>
+</table>
 </div>
+
+<div id="storeMobile" class="md:hidden grid gap-4"></div>
+</section>
 
 <!-- ================= ERO ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">ERO</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="ero"></tbody>
-    </table>
-  </div>
-  <div id="eroMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+<section class="mb-8">
+<h2 class="font-bold text-lg mb-3 text-green-600">ERO</h2>
+
+<div class="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
+<table class="w-full text-sm border">
+<thead class="bg-green-600 text-white">
+<tr>
+<th class="border p-2">ERO</th>
+<th class="border p-2">TARGET</th>
+<th class="border p-2">QTY</th>
+<th class="border p-2">VALUE</th>
+<th class="border p-2">TARGET/DAY</th>
+<th class="border p-2">ACV</th>
+</tr>
+</thead>
+<tbody id="ero"></tbody>
+</table>
 </div>
+
+<div id="eroMobile" class="md:hidden grid gap-4"></div>
+</section>
 
 <!-- ================= PROMOTOR ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">PROMOTOR</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="promotor"></tbody>
-    </table>
-  </div>
-  <div id="promotorMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+<section class="mb-8">
+<h2 class="font-bold text-lg mb-3 text-yellow-600">PROMOTOR</h2>
+
+<div class="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
+<table class="w-full text-sm border">
+<thead class="bg-yellow-500 text-white">
+<tr>
+<th class="border p-2">PROMOTOR</th>
+<th class="border p-2">TARGET</th>
+<th class="border p-2">QTY</th>
+<th class="border p-2">VALUE</th>
+<th class="border p-2">TARGET/DAY</th>
+<th class="border p-2">ACV</th>
+</tr>
+</thead>
+<tbody id="promotor"></tbody>
+</table>
 </div>
 
+<div id="promotorMobile" class="md:hidden grid gap-4"></div>
+</section>
+
 <!-- ================= FINANCING ================= -->
-<div class="mb-5">
-  <div class="hidden md:block bg-white rounded-xl shadow hover:shadow-xl cursor-pointer transition duration-200 overflow-x-auto">
-    <table class="w-full text-sm border">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="border p-2">FINANCING</th>
-          <th class="border p-2">TARGET</th>
-          <th class="border p-2">QTY</th>
-          <th class="border p-2">VALUE</th>
-          <th class="border p-2">TARGET/DAY</th>
-          <th class="border p-2">ACV</th>
-        </tr>
-      </thead>
-      <tbody id="financing"></tbody>
-    </table>
-  </div>
-  <div id="financingMobile" class="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+<section class="mb-10">
+<h2 class="font-bold text-lg mb-3 text-purple-600">FINANCING</h2>
+
+<div class="hidden md:block bg-white rounded-2xl shadow overflow-x-auto">
+<table class="w-full text-sm border">
+<thead class="bg-purple-600 text-white">
+<tr>
+<th class="border p-2">FINANCING</th>
+<th class="border p-2">TARGET</th>
+<th class="border p-2">QTY</th>
+<th class="border p-2">VALUE</th>
+<th class="border p-2">TARGET/DAY</th>
+<th class="border p-2">ACV</th>
+</tr>
+</thead>
+<tbody id="financing"></tbody>
+</table>
+</div>
+
+<div id="financingMobile" class="md:hidden grid gap-4"></div>
+</section>
+
+<!-- BUTTON KEMBALI -->
+<div class="flex justify-center my-8">
+<button onclick="goBack()"
+class="group relative px-8 py-3 rounded-full bg-gray-900 text-white font-semibold
+shadow-lg hover:shadow-2xl transition-all hover:scale-105 active:scale-95">
+
+<span class="absolute inset-0 rounded-full bg-gradient-to-r from-pink-500 via-blue-500 to-purple-500
+opacity-0 blur-xl group-hover:opacity-70 transition"></span>
+
+<span class="relative">← Kembali</span>
+</button>
 </div>
 
 </main>
 
+<footer class="text-center text-sm text-gray-500 pb-4">
+&copy; M Faisal Sadli 2026
+</footer>
+
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
 
-const storeTbl = document.getElementById("store");
-const eroTbl = document.getElementById("ero");
-const promotorTbl = document.getElementById("promotor");
-const financingTbl = document.getElementById("financing");
+const sections = {
+STORE: { table: store, mobile: storeMobile, color: "blue" },
+ERO: { table: ero, mobile: eroMobile, color: "green" },
+PROMOTOR: { table: promotor, mobile: promotorMobile, color: "yellow" },
+FINANCING: { table: financing, mobile: financingMobile, color: "purple" }
+};
 
-const storeMobile = document.getElementById("storeMobile");
-const eroMobile = document.getElementById("eroMobile");
-const promotorMobile = document.getElementById("promotorMobile");
-const financingMobile = document.getElementById("financingMobile");
-
-const search = document.getElementById("search");
-
-function filterItems() {
-  const q = search.value.toLowerCase();
-  [storeMobile, eroMobile, promotorMobile, financingMobile].forEach(container=>{
-    [...container.children].forEach(c=>{
-      c.style.display = c.innerText.toLowerCase().includes(q) ? "" : "none";
-    });
-  });
+function filterItems(){
+const q = search.value.toLowerCase();
+document.querySelectorAll("tbody tr, .mobile-card").forEach(el=>{
+el.style.display = el.innerText.toLowerCase().includes(q) ? "" : "none";
+});
 }
 
 fetch(CSV_URL)
-.then(r => r.text())
-.then(text => {
-  const lines = text.split("\n").map(l=>l.trim()).filter(l=>l && !/^\d+$/.test(l));
+.then(r=>r.text())
+.then(text=>{
+const lines = text.split("\n").map(l=>l.trim()).filter(Boolean);
+let mode="";
 
-  let mode = "";
+lines.forEach(line=>{
+const cols=line.split("\t");
+const key=cols[0]?.toUpperCase();
 
-  lines.forEach(line=>{
-    const cols = line.split("\t");
-    if(!cols[0]) return;
+if(sections[key]){ mode=key; return; }
+if(!mode || cols.length<5) return;
 
-    const key = cols[0].trim().toUpperCase();
-    if(key === "STORE") { mode = "STORE"; return; }
-    if(key === "ERO") { mode = "ERO"; return; }
-    if(key === "PROMOTOR") { mode = "PROMOTOR"; return; }
-    if(key === "FINANCING") { mode = "FINANCING"; return; }
+const sec=sections[mode];
 
-    let row;
-    if(mode === "FINANCING") {
-      const [nama, target, value, targetDay, acv] = cols;
-      row = `
-        <tr class="text-center hover:bg-gray-50">
-          <td class="border p-2 font-semibold">${nama}</td>
-          <td class="border p-2">${target}</td>
-          <td class="border p-2">-</td>
-          <td class="border p-2">${value}</td>
-          <td class="border p-2">${targetDay}</td>
-          <td class="border p-2">${acv}</td>
-        </tr>
-      `;
-      financingTbl.innerHTML += row;
-    } else {
-      const [nama, target, qty, value, targetDay, acv] = cols;
-      row = `
-        <tr class="text-center hover:bg-gray-50">
-          <td class="border p-2 font-semibold">${nama}</td>
-          <td class="border p-2">${target}</td>
-          <td class="border p-2">${qty}</td>
-          <td class="border p-2">${value}</td>
-          <td class="border p-2">${targetDay}</td>
-          <td class="border p-2">${acv}</td>
-        </tr>
-      `;
-      if(mode === "STORE") storeTbl.innerHTML += row;
-      if(mode === "ERO") eroTbl.innerHTML += row;
-      if(mode === "PROMOTOR") promotorTbl.innerHTML += row;
-    }
+// desktop
+sec.table.innerHTML+=`
+<tr class="hover:bg-gray-50 text-center">
+<td class="border p-2 font-semibold">${cols[0]}</td>
+<td class="border p-2">${cols[1]}</td>
+<td class="border p-2">${cols[2]||"-"}</td>
+<td class="border p-2">${cols[3]}</td>
+<td class="border p-2">${cols[4]}</td>
+<td class="border p-2">${cols[5]||"-"}</td>
+</tr>`;
 
-    // Mobile card
-    const card = document.createElement("div");
-    card.className = "p-4 rounded-xl shadow-md hover:shadow-lg transition duration-200";
+// mobile
+const card=document.createElement("div");
+card.className=`mobile-card bg-white rounded-2xl p-4 shadow-md
+border-l-4 border-${sec.color}-500
+hover:shadow-xl hover:-translate-y-1 transition`;
 
-    let bgColor = "bg-white";
-    if(mode==="STORE") bgColor="bg-blue-50";
-    if(mode==="ERO") bgColor="bg-green-50";
-    if(mode==="PROMOTOR") bgColor="bg-yellow-50";
-    if(mode==="FINANCING") bgColor="bg-purple-50";
-    card.className += ` ${bgColor}`;
+card.innerHTML=`
+<div class="font-bold text-lg mb-2 truncate">${cols[0]}</div>
+<div class="grid grid-cols-2 gap-2 text-sm">
+${["TARGET","QTY","VALUE","TARGET/DAY","ACV"].map((l,i)=>`
+<div class="flex justify-between bg-gray-50 p-2 rounded">
+<span>${l}</span><span>${cols[i+1]||"-"}</span>
+</div>`).join("")}
+</div>`;
 
-    if(mode==="FINANCING") {
-      const [nama, target, value, targetDay, acv] = cols;
-      card.innerHTML = `
-        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>-</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
-        </div>
-      `;
-      financingMobile.appendChild(card);
-    } else {
-      const [nama, target, qty, value, targetDay, acv] = cols;
-      card.innerHTML = `
-        <div class="font-bold text-lg mb-2 truncate">${nama}</div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET</span><span>${target}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>QTY</span><span>${qty}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>VALUE</span><span>${value}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>TARGET/DAY</span><span>${targetDay}</span></div>
-          <div class="flex justify-between bg-white/50 p-1 rounded"><span>ACV</span><span>${acv}</span></div>
-        </div>
-      `;
-      if(mode==="STORE") storeMobile.appendChild(card);
-      if(mode==="ERO") eroMobile.appendChild(card.cloneNode(true));
-      if(mode==="PROMOTOR") promotorMobile.appendChild(card.cloneNode(true));
-    }
-  });
-})
-.catch(err=>console.error(err));
+sec.mobile.appendChild(card);
+});
+});
+
+function goBack(){
+window.location.href="index.html";
+}
 </script>
 
 </body>

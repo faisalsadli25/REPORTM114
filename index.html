@@ -1,40 +1,184 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard Tim Maros</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ANIMATED BACKGROUND -->
+  <style>
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animated-bg {
+      background: linear-gradient(
+        -45deg,
+        #ec4899,
+        #6366f1,
+        #06b6d4,
+        #a855f7
+      );
+      background-size: 400% 400%;
+      animation: gradientMove 15s ease infinite;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen font-sans">
-    <header class="bg-white p-4 font-bold text-xl text-center shadow-xl">
-        SELAMAT DATANG
-    </header>
 
-    <main class="max-w-6xl mx-auto p-4">
-        <div class="max-w-6xl mx-auto grid gird-cols-1 sm:grid-cols-2 gap-3">
-            <div id="target" onclick="goindex()" class="bg-white p-2 aspect-square flex justify-center items-center shadow-xl rounded-xl hover:ring-2 hover:ring-red-950 transition duration-500 cursor-pointer hover:bg-red-950 hover:text-white text-center">
-                <h1 class="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ">CEK TARGET-DAY TIM MAROS</h1>
-            </div>
+<body class="animated-bg min-h-screen font-sans">
 
-            <div id="VAS" onclick="goVas()" class="bg-white p-2 aspect-square flex justify-center items-center shadow-xl rounded-xl hover:ring-2 hover:ring-red-950 transition duration-500 cursor-pointer hover:bg-red-950 hover:text-white text-center">
-                <h1 class="font-bold text-xl sm:text-2xl md:text-3xl lg:text-4xl ">CEK AR TECPROTEC</h1>
-            </div>
-        </div>
-    </main>
+<!-- GLASS WRAPPER -->
+<div class="min-h-screen bg-white/80 backdrop-blur-md">
 
-    <script>
-        function goindex(){
-            document.getElementById('target')
-            window.location.href="target.html"
-        }
+  <!-- NAVBAR -->
+  <header class="bg-white/90 shadow sticky top-0 z-50 backdrop-blur">
+    <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
 
-        function goVas(){
-            document.getElementById('VAS')
-            window.location.href = "vas.html"
-        }
+      <h1 class="font-bold text-xl">Dashboard</h1>
 
-    </script>
+      <!-- Desktop Menu -->
+      <nav class="hidden md:flex gap-6 font-semibold">
+        <a href="#" class="hover:text-indigo-600">Home</a>
+        <a href="target.html" class="hover:text-indigo-600">Target</a>
+        <a href="vas.html" class="hover:text-indigo-600">VAS</a>
+        <a href="contact.html" class="hover:text-indigo-600">Contact</a>
+      </nav>
+
+      <!-- Hamburger -->
+      <button id="menuBtn" class="md:hidden">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
+          viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+      <nav class="flex flex-col p-4 gap-3 font-semibold">
+        <a href="#" class="hover:text-indigo-600">Home</a>
+        <a href="target.html" class="hover:text-indigo-600">Target</a>
+        <a href="vas.html" class="hover:text-indigo-600">VAS</a>
+        <a href="contact.html" class="hover:text-indigo-600">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="text-center py-14 px-4">
+    <h2 class="text-3xl md:text-4xl font-extrabold mb-3">
+      SELAMAT DATANG
+    </h2>
+    <p class="text-gray-600 max-w-xl mx-auto">
+      Akses cepat laporan Target Harian dan VAS Tim Maros
+    </p>
+  </section>
+
+  <!-- MENU CARDS -->
+  <main class="max-w-6xl mx-auto px-4 pb-16">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+      <!-- TARGET CARD -->
+      <div id="targetCard"
+        class="group bg-white rounded-2xl shadow-xl aspect-square
+               flex items-center justify-center text-center cursor-pointer
+               transition-all duration-300
+               hover:scale-105 hover:shadow-2xl
+               hover:bg-indigo-700 hover:text-white">
+
+        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
+          CEK TARGET-DAY<br>TIM MAROS
+        </span>
+      </div>
+
+      <!-- VAS CARD -->
+      <div id="vasCard"
+        class="group bg-white rounded-2xl shadow-xl aspect-square
+               flex items-center justify-center text-center cursor-pointer
+               transition-all duration-300
+               hover:scale-105 hover:shadow-2xl
+               hover:bg-purple-700 hover:text-white">
+
+        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
+          CEK VAS
+        </span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="text-center py-4 text-sm text-gray-500">
+    © 2026 Dashboard Tim Maros
+  </footer>
+
+</div>
+
+<!-- MODAL -->
+<div id="vasModal"
+  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+
+  <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-xl
+              animate-[scale_0.2s_ease-out]">
+    <h2 class="text-xl font-bold mb-2">
+      Mau lihat progres kamu?
+    </h2>
+    <p class="text-gray-600 mb-6">
+      Data akan ditampilkan
+    </p>
+
+    <div class="flex gap-4 justify-center">
+      <button id="cancelBtn"
+        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+        Batal
+      </button>
+
+      <button id="confirmBtn"
+        class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+        Ya, Lihat
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  // Hamburger
+  const btn = document.getElementById('menuBtn');
+  const menu = document.getElementById('mobileMenu');
+  btn.addEventListener('click', () => menu.classList.toggle('hidden'));
+
+  // Modal
+  const targetCard = document.getElementById("targetCard");
+  const vasCard = document.getElementById("vasCard");
+  const modal = document.getElementById("vasModal");
+  const cancelBtn = document.getElementById("cancelBtn");
+  const confirmBtn = document.getElementById("confirmBtn");
+
+  targetCard.onclick = () => openModal("target.html");
+  vasCard.onclick = () => openModal("vas.html");
+
+  let targetUrl = "";
+
+  function openModal(url) {
+    targetUrl = url;
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+  }
+
+  function closeModal() {
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+  }
+
+  cancelBtn.onclick = closeModal;
+  modal.onclick = e => { if (e.target === modal) closeModal(); };
+  confirmBtn.onclick = () => window.location.href = targetUrl;
+</script>
+
 </body>
 </html>
-

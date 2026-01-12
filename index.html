@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- ANIMATED BACKGROUND -->
-  <style>
+   <style>
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -17,13 +17,13 @@
     .animated-bg {
       background: linear-gradient(
         -45deg,
-        #ec4899,
-        #6366f1,
+        #9d8993,
+        #960000,
         #06b6d4,
         #a855f7
       );
       background-size: 400% 400%;
-      animation: gradientMove 15s ease infinite;
+      animation: gradientMove 8s ease infinite;
     }
   </style>
 </head>
@@ -45,6 +45,7 @@
         <a href="target.html" class="hover:text-indigo-600">Target</a>
         <a href="vas.html" class="hover:text-indigo-600">VAS</a>
         <a href="contact.html" class="hover:text-indigo-600">Contact</a>
+        <a href="ero.html" class="hover:text-indigo-600">ERO</a>
       </nav>
 
       <!-- Hamburger -->
@@ -64,6 +65,7 @@
         <a href="target.html" class="hover:text-indigo-600">Target</a>
         <a href="vas.html" class="hover:text-indigo-600">VAS</a>
         <a href="contact.html" class="hover:text-indigo-600">Contact</a>
+        <a href="ero.html" class="hover:text-indigo-600">ERO</a>
       </nav>
     </div>
   </header>
@@ -80,7 +82,7 @@
 
   <!-- MENU CARDS -->
   <main class="max-w-6xl mx-auto px-4 pb-16">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
 
       <!-- TARGET CARD -->
       <div id="targetCard"
@@ -105,6 +107,20 @@
 
         <span class="font-bold text-xl sm:text-2xl md:text-3xl">
           CEK VAS
+        </span>
+      </div>
+
+      <!-- ERO -->
+
+       <div id="eroCard"
+        class="group bg-white rounded-2xl shadow-xl aspect-square
+               flex items-center justify-center text-center cursor-pointer
+               transition-all duration-300
+               hover:scale-105 hover:shadow-2xl
+               hover:bg-purple-700 hover:text-white">
+
+        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
+          CEK PENJUALAN ERO
         </span>
       </div>
 
@@ -155,12 +171,14 @@
   // Modal
   const targetCard = document.getElementById("targetCard");
   const vasCard = document.getElementById("vasCard");
+  const eroCard = document.getElementById("eroCard")
   const modal = document.getElementById("vasModal");
   const cancelBtn = document.getElementById("cancelBtn");
   const confirmBtn = document.getElementById("confirmBtn");
 
   targetCard.onclick = () => openModal("target.html");
   vasCard.onclick = () => openModal("vas.html");
+  eroCard.onclick = () => openModal("ero.html");
 
   let targetUrl = "";
 

@@ -40,7 +40,7 @@ class="bg-50/75 w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-
 
 <!-- TECPROTEC -->
 <h2 class="font-bold text-lg mb-2">TECPROTEC</h2>
-<div class="hidden md:block bg-white rounded-xl mb-6 overflow-hidden">
+<div class="hidden md:block bg-white/50 cursor-pointer rounded-xl mb-6 overflow-hidden">
 <table class="w-full text-sm border">
 <thead class="bg-gray-800/50 text-white">
 <tr>
@@ -59,7 +59,7 @@ class="bg-50/75 w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-
 
 <!-- INDOSAT -->
 <h2 class="font-bold text-lg mb-2 text-yellow-500">INDOSAT</h2>
-<div class="hidden md:block bg-white rounded-xl mb-6 overflow-hidden">
+<div class="hidden md:block bg-white/50 cursor-pointer rounded-xl mb-6 overflow-hidden">
 <table class="w-full text-sm border">
 <thead class="bg-yellow-400/50 text-white">
 <tr>
@@ -78,7 +78,7 @@ class="bg-50/75 w-full mb-4 p-3 rounded-xl shadow focus:outline-none focus:ring-
 
 <!-- TELKOMSEL -->
 <h2 class="font-bold text-lg mb-2 text-red-600">TELKOMSEL</h2>
-<div class="hidden md:block bg-white rounded-xl overflow-hidden">
+<div class="hidden md:block bg-white/50 cursor-pointer rounded-xl overflow-hidden">
 <table class="w-full text-sm border">
 <thead class="bg-red-600/50 text-white">
 <tr>
@@ -106,7 +106,7 @@ hover:scale-105 active:scale-95 transition shadow-lg">
 </button>
 </div>
 
-<footer class="text-center text-sm text-gray-600 mb-4">
+<footer class="text-center text-sm text-white font-bold mb-4">
 &copy; M Faisal Sadli 2026
 </footer>
 
@@ -161,7 +161,7 @@ renderCard(item, telkomselMobile, "red");
 
 function renderRow(d, table) {
 table.innerHTML += `
-<tr>
+<tr class ="hover:bg-white hover:text-red-700">
 <td class="border p-2">${d.name}</td>
 <td class="border p-2 text-right">${d.target}</td>
 <td class="border p-2 text-center">${d.qty}</td>

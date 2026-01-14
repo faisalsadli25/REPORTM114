@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pencapaian ERO</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        canvas { max-height: 400px; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 to-red-900 min-h-screen text-white font-sans">
+
+    <header class="p-8 text-center">
+        <h1 class="text-3xl font-bold tracking-widest text-white drop-shadow-lg">📊 Pencapaian ERO</h1>
+        <p class="text-slate-300 text-sm mt-2">Update Highest and Lowest Achievement</p>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-4 space-y-12 pb-20">
+        <section id="DEVICE" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
+        <section id="AKSESORIS" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
+        <section id="TV" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
+        
+        <div class="text-center pt-8">
+            <a href="index.html" class="inline-block px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-slate-200 transition-all shadow-xl">
+                ← Kembali ke Report
+            </a>
+        </div>
+    </main>
+    
+    <script>
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/1n3TNktABD8xQCW7upfPf9puo9dFPmaF3S7D15FY9yvU/export?format=tsv";
+
+        function parseIDR(val) {
+            if (!val) return null;
+            const cleaned = val.toString().replace(/Rp/gi, "").replace(/\s/g, "").replace(/\./g, "").replace(/,/g, "");
+            const num = Number(cleaned);
+            return isNaN(num) ? null : num;
+        }
+
+        // Penamaan objek section yang konsisten
+        const sectionsData = { DEVICE: [], AKSESORIS: [], TV: [] };
+
+        fetch(CSV_URL)
+        .then(r => r.text())
+        .then(text => {
+            const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+            let mode = "";
+
+            lines.forEach(line => {
+                const c = line.split("\t");
+                const key = c[0]?.toUpperCase();
+
+                // Cek apakah baris ini adalah nama section (DEVICE/AKSESORIS/TV)
+                if(sectionsData.hasOwnProperty(key)) {
+                    mode = key;
+                    return;
+                }
+                
+                if(!mode) return;
+
+                const name = c[0]?.trim();
+                
+                // KARENA SEMUA TABEL SAMA: ambil data dari kolom ke-4 (indeks 3)
+                let rawValue = c[3]; 
+                const value = parseIDR(rawValue);
+
+                // Filter: Nama tidak boleh kosong, nilai tidak boleh nol, abaikan baris Header
+                if (!name || value === null || value === 0) return;
+                
+                const ignore = ["total", "target", "value", "achievement", "nama", "qty", "acv"];
+                if (ignore.some(word => name.toLowerCase().includes(word))) return;
+
+                sectionsData[mode].push({ name, value });
+            });
+
+            // Jalankan fungsi render untuk masing-masing section
+            renderUI("DEVICE", "#60a5fa");    // Blue
+            renderUI("AKSESORIS", "#facc15"); // Yellow
+            renderUI("TV", "#4ade80");        // Green
+        });
+
+        function renderUI(type, color) {
+            const data = [...sectionsData[type]];
+            if (data.length === 0) return;
+
+            // Urutkan data dari yang terbesar ke terkecil
+            data.sort((a, b) => b.value - a.value);
+            const top = data[0];
+            const low = data[data.length - 1];
+
+            const container = document.getElementById(type);
+            container.innerHTML = `
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="font-black text-2xl tracking-tight text-white">${type}</h2>
+                    <span class="bg-white/10 px-3 py-1 rounded-lg text-xs font-mono uppercase">Performance</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
+                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-2 opacity-10 text-4xl">🔥</div>
+                        <p class="text-slate-400 text-xs uppercase font-bold mb-1 tracking-wider">Top Achievement</p>
+                        <p class="text-xl font-bold truncate">${top.name}</p>
+                        <p class="text-2xl font-black mt-1" style="color: ${color}">Rp ${top.value.toLocaleString("id-ID")}</p>
+                    </div>
+                    <div class="bg-white/5 border border-white/10 p-5 rounded-2xl relative overflow-hidden">
+                        <div class="absolute top-0 right-0 p-2 opacity-10 text-4xl">❄️</div>
+                        <p class="text-slate-400 text-xs uppercase font-bold mb-1 tracking-wider">Lowest Point</p>
+                        <p class="text-xl font-bold truncate">${low.name}</p>
+                        <p class="text-2xl font-black mt-1 text-slate-300">Rp ${low.value.toLocaleString("id-ID")}</p>
+                    </div>
+                </div>
+
+                <div class="relative h-[300px] w-full">
+                    <canvas id="${type}Chart"></canvas>
+                </div>
+            `;
+
+            new Chart(document.getElementById(type + "Chart"), {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.name),
+                    datasets: [{
+                        data: data.map(d => d.value),
+                        backgroundColor: color,
+                        borderRadius: 10,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Bar horizontal agar nama toko panjang tetap terbaca
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => " Rp " + ctx.raw.toLocaleString("id-ID")
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { color: "rgba(255,255,255,0.05)" },
+                            ticks: { 
+                                color: "#94a3b8",
+                                callback: v => v >= 1000000 ? (v/1000000) + "jt" : v 
+                            }
+                        },
+                        y: { 
+                            grid: { display: false },
+                            ticks: { color: "#f8fafc", font: { weight: 'bold' } } 
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

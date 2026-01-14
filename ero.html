@@ -38,7 +38,7 @@
 
         <!-- Device -->
          <h2 class="font-bold text-lg mb-2 text-white">DEVICE</h2>
-         <div class="hidden md:block bg-white/50 cursor-pointer rounded-xl mb-6 overflow-x-auto">
+         <div class="hidden md:block bg-white/50 cursor-pointer rounded-xl mb-6 overflow-x-auto ">
             <table class="w-full text-sm border">
                 <thead class="bg-red-600 text-white">
                     <tr>
@@ -57,7 +57,7 @@
 
          <!-- AKSESORIS -->
            <h2 class="font-bold text-lg mb-2 text-white">AKSESORIS</h2>
-         <div class="hidden md:block bg-white rounded-xl mb-6 overflow-hidden">
+         <div class="hidden md:block bg-white/50 cursor-pointer rounded-xl mb-6 overflow-x-auto">
             <table class="w-full text-sm border">
                 <thead class="bg-red-600 text-white">
                     <tr>
@@ -73,6 +73,25 @@
             </table>
          </div>
          <div id="aksesorisMobile" class="md:hidden grid gap-4 mb-6"></div>
+
+         <!-- television -->
+          <h2 class="font-bold text-white text-lg mb-2">TV</h2>
+          <div class="hidden md:block bg-white/50 rounded-lg mb-6 overflow-x-auto cursor-pointer">
+            <table class="w-full text-sm border">
+                <thead class="bg-red-600 text-white">
+                    <tr>
+                        <th class="border p-2">Nama</th>
+                        <th class="border p-2">Target</th>
+                        <th class="border p-2">Qty</th>
+                        <th class="border p-2">Value</th>
+                        <th class="border p-2">ValueTarget/Day</th>
+                        <th class="border p-2">%</th>
+                    </tr>
+                </thead>
+                <tbody id="tvTable"></tbody>
+            </table>
+          </div>
+          <div id="tvMobile" class="md:hidden grid gap-4 mb-6"></div>
      </main>
 
      <!-- Button -->
@@ -94,8 +113,10 @@
 
     const deviceTable = document.getElementById("deviceTable");
     const aksesorisTable = document.getElementById("aksesorisTable");
+    const tvTable = document.getElementById("tvTable");
     const deviceMobile = document.getElementById("deviceMobile");
     const aksesorisMobile = document.getElementById("aksesorisMobile");
+    const tvMobile = document.getElementById("tvMobile");
 
     let currentGroup = "";
 
@@ -109,6 +130,7 @@
 
             if (cols[0].toUpperCase() === "DEVICE") { currentGroup = "DEVICE"; return; }
             if (cols[0].toUpperCase() === "AKSESORIS") { currentGroup = "AKSESORIS"; return; }
+            if (cols[0].toUpperCase() === "TV") { currentGroup = "TV"; return; }
             if (cols[0] === "TARGET" || cols.length < 6) return;
 
             const item = {
@@ -129,13 +151,18 @@
                 renderRow(item,aksesorisTable);
                 renderCard(item,aksesorisMobile,"red");
             }
+
+             if(currentGroup === "TV"){
+                renderRow(item,tvTable);
+                renderCard(item,tvMobile,"red");
+             }
         });
     });
 
     function renderRow(d, table){
         table.innerHTML += `
-        <tr>
-            <td class = "border p-2">${d.name}</td>
+        <tr class="hover:bg-white hover:text-red-500">
+            <td class = "border p-2 ">${d.name}</td>
             <td class = "border p-2">${d.target}</td>
             <td class = "border p-2">${d.qty}</td>
             <td class = "border p-2">${d.value}</td>
@@ -149,9 +176,9 @@
 
     function renderCard(d,container,color){
         container.innerHTML += `
-        <div class = "group bg-white/50 rounded-2xl p-4 shadow-md 
-        hover:shadow-xl hover:-translate-y-1 transition-all duration-300
-        border-l-4 border-${color}-500">
+        <div class = "group bg-white/50 hover:bg-white rounded-2xl p-4 shadow-md 
+        hover:shadow-xl hover:-translate-y-2 transition-all duration-200
+        border-l-4 border-${color}-500 ">
 
         <div class ="flex justify-between items-center mb-2">
             <span class ="font-bold text-lg">${d.name}</span>

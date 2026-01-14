@@ -26,6 +26,17 @@
       animation: gradientMove 8s ease infinite;
     }
   </style>
+
+   <!-- font -->
+
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+
 </head>
 
 <body class="animated-bg min-h-screen font-sans">
@@ -90,10 +101,10 @@
                flex items-center justify-center text-center cursor-pointer
                transition-all duration-300
                hover:scale-105 hover:shadow-2xl
-               hover:bg-indigo-700 hover:text-white">
+               hover:bg-white/50 hover:text-red-700">
 
         <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          CEK TARGET-DAY<br>TIM MAROS
+          TIM MAROS <i class="fa-solid fa-users-viewfinder"></i>
         </span>
       </div>
 
@@ -103,10 +114,10 @@
                flex items-center justify-center text-center cursor-pointer
                transition-all duration-300
                hover:scale-105 hover:shadow-2xl
-               hover:bg-purple-700 hover:text-white">
+               hover:bg-white/50 hover:text-red-700">
 
         <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          CEK VAS
+          VAS <i class="fa-solid fa-chart-line"></i>
         </span>
       </div>
 
@@ -117,10 +128,10 @@
                flex items-center justify-center text-center cursor-pointer
                transition-all duration-300
                hover:scale-105 hover:shadow-2xl
-               hover:bg-purple-700 hover:text-white">
+               hover:bg-white/50 hover:text-red-700">
 
         <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          CEK PENJUALAN ERO
+          ERO <i class="fa-solid fa-people-group"></i>
         </span>
       </div>
 
@@ -128,8 +139,8 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="text-center py-4 text-sm text-gray-500">
-    © 2026 Dashboard Tim Maros
+  <footer class="text-center py-4 text-sm animated-bg font-bold rounded-full max-w-3xl mx-auto text-white">
+    © 2026 BY M FAISAL SADLI
   </footer>
 
 </div>
@@ -138,7 +149,7 @@
 <div id="vasModal"
   class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
 
-  <div class="bg-white rounded-2xl p-6 w-80 text-center shadow-xl
+  <div class="bg-white/50 rounded-2xl p-6 w-80 text-center shadow-xl
               animate-[scale_0.2s_ease-out]">
     <h2 class="text-xl font-bold mb-2">
       Mau lihat progres kamu?
@@ -154,7 +165,7 @@
       </button>
 
       <button id="confirmBtn"
-        class="px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700">
+        class="px-4 py-2 rounded-lg bg-red-700 text-white hover:bg-red-700/50">
         Ya, Lihat
       </button>
     </div>

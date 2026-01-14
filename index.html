@@ -6,8 +6,7 @@
   <title>Dashboard Tim Maros</title>
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- ANIMATED BACKGROUND -->
-   <style>
+  <style>
     @keyframes gradientMove {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -15,181 +14,147 @@
     }
 
     .animated-bg {
-      background: linear-gradient(
-        -45deg,
-        #9d8993,
-        #960000,
-        #06b6d4,
-        #a855f7
-      );
+      background: linear-gradient(-45deg, #9d8993, #960000, #06b6d4, #a855f7);
       background-size: 400% 400%;
       animation: gradientMove 8s ease infinite;
     }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.6);
+      transform: translateY(-5px);
+    }
   </style>
 
-   <!-- font -->
-
-  <link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 
 <body class="animated-bg min-h-screen font-sans">
 
-<!-- GLASS WRAPPER -->
-<div class="min-h-screen bg-white/80 backdrop-blur-md">
+<div class="min-h-screen bg-white/70 backdrop-blur-lg">
 
-  <!-- NAVBAR -->
   <header class="bg-white/90 shadow sticky top-0 z-50 backdrop-blur">
     <div class="max-w-6xl mx-auto flex items-center justify-between p-4">
+      <h1 class="font-bold text-xl tracking-tight text-gray-800">MAROS <span class="text-red-700">REPORT</span></h1>
 
-      <h1 class="font-bold text-xl">Dashboard</h1>
-
-      <!-- Desktop Menu -->
-      <nav class="hidden md:flex gap-6 font-semibold">
-        <a href="#" class="hover:text-indigo-600">Home</a>
-        <a href="target.html" class="hover:text-indigo-600">Target</a>
-        <a href="vas.html" class="hover:text-indigo-600">VAS</a>
-        <a href="contact.html" class="hover:text-indigo-600">Contact</a>
-        <a href="ero.html" class="hover:text-indigo-600">ERO</a>
+      <nav class="hidden md:flex gap-6 font-semibold text-gray-700">
+        <a href="#" class="hover:text-red-700 transition">Home</a>
+        <a href="dashboard.html" class="hover:text-red-700 transition font-bold text-red-600">Dashboard</a>
+        <a href="target.html" class="hover:text-red-700 transition">Target</a>
+        <a href="vas.html" class="hover:text-red-700 transition">VAS</a>
+        <a href="ero.html" class="hover:text-red-700 transition">ERO</a>
       </nav>
 
-      <!-- Hamburger -->
-      <button id="menuBtn" class="md:hidden">
-        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"
-          viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="M4 6h16M4 12h16M4 18h16" />
+      <button id="menuBtn" class="md:hidden p-2">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
     </div>
 
-    <!-- Mobile Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-white border-t">
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-100 shadow-xl">
       <nav class="flex flex-col p-4 gap-3 font-semibold">
-        <a href="#" class="hover:text-indigo-600">Home</a>
-        <a href="target.html" class="hover:text-indigo-600">Target</a>
-        <a href="vas.html" class="hover:text-indigo-600">VAS</a>
-        <a href="contact.html" class="hover:text-indigo-600">Contact</a>
-        <a href="ero.html" class="hover:text-indigo-600">ERO</a>
+        <a href="#" class="p-2 hover:bg-gray-50 rounded">Home</a>
+        <a href="dashboard.html" class="p-2 text-red-700 bg-red-50 rounded">Dashboard</a>
+        <a href="target.html" class="p-2 hover:bg-gray-50 rounded">Target</a>
+        <a href="vas.html" class="p-2 hover:bg-gray-50 rounded">VAS</a>
+        <a href="ero.html" class="p-2 hover:bg-gray-50 rounded">ERO</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="text-center py-14 px-4">
-    <h2 class="text-3xl md:text-4xl font-extrabold mb-3">
+  <section class="text-center py-12 px-4">
+    <h2 class="text-3xl md:text-5xl font-extrabold mb-4 text-gray-900 tracking-tight">
       SELAMAT DATANG
     </h2>
-    <p class="text-gray-600 max-w-xl mx-auto">
-      Akses cepat laporan Target Harian dan VAS Tim Maros
+    <p class="text-gray-600 max-w-xl mx-auto leading-relaxed">
+      Akses cepat laporan performa, Target Harian, dan VAS Tim Maros dalam satu genggaman.
     </p>
   </section>
 
-  <!-- MENU CARDS -->
-  <main class="max-w-6xl mx-auto px-4 pb-16">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+  <main class="max-w-6xl mx-auto px-4 pb-20">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
 
-      <!-- TARGET CARD -->
-      <div id="targetCard"
-        class="group bg-white rounded-2xl shadow-xl aspect-square
-               flex items-center justify-center text-center cursor-pointer
-               transition-all duration-300
-               hover:scale-105 hover:shadow-2xl
-               hover:bg-white/50 hover:text-red-700">
-
-        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          TIM MAROS <i class="fa-solid fa-users-viewfinder"></i>
-        </span>
+      <div onclick="openModal('dashboard.html')" class="glass-card rounded-3xl shadow-lg p-10 cursor-pointer group">
+        <div class="mb-4 text-4xl text-blue-600 group-hover:scale-110 transition duration-300">
+          <i class="fa-solid fa-chart-pie"></i>
+        </div>
+        <span class="font-bold text-xl block group-hover:text-blue-700 transition">DASHBOARD</span>
+        <p class="text-xs text-gray-500 mt-2 uppercase tracking-widest font-semibold">Analytics</p>
       </div>
 
-      <!-- VAS CARD -->
-      <div id="vasCard"
-        class="group bg-white rounded-2xl shadow-xl aspect-square
-               flex items-center justify-center text-center cursor-pointer
-               transition-all duration-300
-               hover:scale-105 hover:shadow-2xl
-               hover:bg-white/50 hover:text-red-700">
-
-        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          VAS <i class="fa-solid fa-chart-line"></i>
-        </span>
+      <div onclick="openModal('target.html')" class="glass-card rounded-3xl shadow-lg p-10 cursor-pointer group">
+        <div class="mb-4 text-4xl text-red-600 group-hover:scale-110 transition duration-300">
+          <i class="fa-solid fa-users-viewfinder"></i>
+        </div>
+        <span class="font-bold text-xl block group-hover:text-red-700 transition text-gray-800">TIM MAROS</span>
+        <p class="text-xs text-gray-500 mt-2 uppercase tracking-widest font-semibold">Daily Target</p>
       </div>
 
-      <!-- ERO -->
+      <div onclick="openModal('vas.html')" class="glass-card rounded-3xl shadow-lg p-10 cursor-pointer group">
+        <div class="mb-4 text-4xl text-cyan-600 group-hover:scale-110 transition duration-300">
+          <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <span class="font-bold text-xl block group-hover:text-cyan-700 transition text-gray-800">VAS</span>
+        <p class="text-xs text-gray-500 mt-2 uppercase tracking-widest font-semibold">Add-on Sales</p>
+      </div>
 
-       <div id="eroCard"
-        class="group bg-white rounded-2xl shadow-xl aspect-square
-               flex items-center justify-center text-center cursor-pointer
-               transition-all duration-300
-               hover:scale-105 hover:shadow-2xl
-               hover:bg-white/50 hover:text-red-700">
-
-        <span class="font-bold text-xl sm:text-2xl md:text-3xl">
-          ERO <i class="fa-solid fa-people-group"></i>
-        </span>
+      <div onclick="openModal('ero.html')" class="glass-card rounded-3xl shadow-lg p-10 cursor-pointer group">
+        <div class="mb-4 text-4xl text-purple-600 group-hover:scale-110 transition duration-300">
+          <i class="fa-solid fa-people-group"></i>
+        </div>
+        <span class="font-bold text-xl block group-hover:text-purple-700 transition text-gray-800">ERO</span>
+        <p class="text-xs text-gray-500 mt-2 uppercase tracking-widest font-semibold">Store Performance</p>
       </div>
 
     </div>
   </main>
 
-  <!-- FOOTER -->
-  <footer class="text-center py-4 text-sm animated-bg font-bold rounded-full max-w-3xl mx-auto text-white">
+  <footer class="text-center py-4 mb-10 text-sm animated-bg font-bold rounded-full max-w-sm mx-auto text-white shadow-lg">
     © 2026 BY M FAISAL SADLI
   </footer>
 
 </div>
 
-<!-- MODAL -->
-<div id="vasModal"
-  class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
-
-  <div class="bg-white/50 rounded-2xl p-6 w-80 text-center shadow-xl
-              animate-[scale_0.2s_ease-out]">
-    <h2 class="text-xl font-bold mb-2">
-      Mau lihat progres kamu?
+<div id="vasModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center z-[100] p-4">
+  <div class="bg-white rounded-3xl p-8 w-full max-w-xs text-center shadow-2xl transition-all scale-95" id="modalContent">
+    <div class="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+      <i class="fa-solid fa-circle-question"></i>
+    </div>
+    <h2 class="text-xl font-bold mb-2 text-gray-800">
+      Lihat Progres?
     </h2>
-    <p class="text-gray-600 mb-6">
-      Data akan ditampilkan
+    <p class="text-gray-500 mb-6 text-sm leading-relaxed">
+      Anda akan diarahkan ke halaman detail laporan yang Anda pilih.
     </p>
 
-    <div class="flex gap-4 justify-center">
-      <button id="cancelBtn"
-        class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
-        Batal
+    <div class="flex flex-col gap-2">
+      <button id="confirmBtn" class="w-full py-3 rounded-xl bg-red-700 text-white font-bold hover:bg-red-800 transition active:scale-95 shadow-md shadow-red-200">
+        Ya, Lanjutkan
       </button>
-
-      <button id="confirmBtn"
-        class="px-4 py-2 rounded-lg bg-red-700 text-white hover:bg-red-700/50">
-        Ya, Lihat
+      <button id="cancelBtn" class="w-full py-3 rounded-xl bg-gray-100 text-gray-600 font-bold hover:bg-gray-200 transition">
+        Batal
       </button>
     </div>
   </div>
 </div>
 
-<!-- SCRIPT -->
 <script>
-  // Hamburger
+  // Menu Toggle
   const btn = document.getElementById('menuBtn');
   const menu = document.getElementById('mobileMenu');
   btn.addEventListener('click', () => menu.classList.toggle('hidden'));
 
-  // Modal
-  const targetCard = document.getElementById("targetCard");
-  const vasCard = document.getElementById("vasCard");
-  const eroCard = document.getElementById("eroCard")
+  // Modal Logic
   const modal = document.getElementById("vasModal");
+  const modalContent = document.getElementById("modalContent");
   const cancelBtn = document.getElementById("cancelBtn");
   const confirmBtn = document.getElementById("confirmBtn");
-
-  targetCard.onclick = () => openModal("target.html");
-  vasCard.onclick = () => openModal("vas.html");
-  eroCard.onclick = () => openModal("ero.html");
 
   let targetUrl = "";
 
@@ -197,16 +162,29 @@
     targetUrl = url;
     modal.classList.remove("hidden");
     modal.classList.add("flex");
+    // Small delay to trigger animation
+    setTimeout(() => {
+      modalContent.classList.remove("scale-95");
+      modalContent.classList.add("scale-100");
+    }, 10);
   }
 
   function closeModal() {
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    modalContent.classList.remove("scale-100");
+    modalContent.classList.add("scale-95");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }, 200);
   }
 
   cancelBtn.onclick = closeModal;
-  modal.onclick = e => { if (e.target === modal) closeModal(); };
   confirmBtn.onclick = () => window.location.href = targetUrl;
+
+  // Close when clicking outside
+  modal.onclick = (e) => {
+    if (e.target === modal) closeModal();
+  };
 </script>
 
 </body>

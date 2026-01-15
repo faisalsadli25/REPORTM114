@@ -2,72 +2,114 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>M114 DASHBOARD - HD MULTI-STYLE</title>
+    <title>M114 SMART DASHBOARD - FINAL EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 2. CUSTOM CSS: Mengatur Font dan Efek Kartu Melayang (Glassmorphism) */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        .glass-card {
+            background: rgba(22, 29, 49, 0.7); /* Warna transparan */
+            backdrop-filter: blur(10px);        /* Efek buram seperti kaca */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        /* Efek Interaktif: Kartu akan naik dan membesar sedikit saat disentuh/hover */
+        .glass-card:hover {
+            transform: translateY(-12px) scale(1.01);
+            background: rgba(30, 39, 65, 0.9);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-color: rgba(255,255,255,0.2);
+        }
+    </style>
 </head>
 <body class="bg-[#0b0f1a] text-slate-100 min-h-screen p-4 md:p-8">
 
 <div class="max-w-[1600px] mx-auto">
-    <header class="mb-10 flex flex-col md:flex-row justify-between items-center bg-[#161d31] p-8 rounded-[2.5rem] border border-white/10 shadow-2xl gap-4">
-        <div>
-            <h1 class="text-4xl font-black text-white italic tracking-tighter uppercase leading-none">📊 M114 SMART MONITOR</h1>
-            <p class="text-blue-400 font-bold text-sm uppercase tracking-[0.3em] mt-2">High Definition • Dynamic Visuals</p>
+    <header class="mb-12 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-[#161d31] to-[#1e2741] p-10 rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-5xl font-extrabold text-white italic tracking-tighter uppercase leading-none">
+                📊 M114 <span class="text-blue-400">SMART</span> MONITOR
+            </h1>
+            <p class="text-slate-400 font-bold text-xs uppercase tracking-[0.5em] mt-3 flex items-center gap-2">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Sistem Monitoring Terintegrasi
+            </p>
         </div>
-        <div id="status-text" class="text-xs font-mono text-green-400 bg-green-500/10 px-6 py-3 rounded-full border border-green-500/30">
-            SYSTEM ONLINE
-        </div>
+        <button onclick="location.reload()" class="bg-white/5 hover:bg-white/10 px-8 py-4 rounded-2xl border border-white/10 transition-all font-bold uppercase text-xs tracking-widest active:scale-95 mt-6 md:mt-0">
+            🔄 Refresh Data
+        </button>
     </header>
 
-    <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-        </div>
+    <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
 </div>
 
 <script>
+/**
+ * 5. KONFIGURASI DATA
+ * SHEET_URL: Link data dari Google Sheets dalam format TSV
+ */
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1bHyJlzlZfrWSTrcH-ZAqKqzhz7vNVvILxvPQW9AMihQ/export?format=tsv&gid=0";
 
-Chart.defaults.devicePixelRatio = 2; 
-Chart.defaults.font.family = "'Inter', 'ui-sans-serif', 'system-ui'";
+// Setting agar grafik tajam di layar HP/Monitor
+Chart.defaults.devicePixelRatio = 2;
+Chart.defaults.color = '#94a3b8';
 
+/**
+ * 6. FUNGSI MEMBERSIHKAN DATA
+ * Mengubah teks (seperti "Rp 1.000.000") menjadi angka murni agar bisa diproses matematika
+ */
 function toNum(val) {
     if (!val) return 0;
     let cleaned = val.toString().replace(/[^\d]/g, "");
     return parseInt(cleaned) || 0;
 }
 
+/**
+ * 7. FUNGSI AMBIL DATA (INIT)
+ * Mengambil data dari internet, memprosesnya, dan menyortir berdasarkan kategori
+ */
 async function init() {
     try {
         const res = await fetch(SHEET_URL + "&t=" + new Date().getTime());
         const tsv = await res.text();
         const rows = tsv.split(/\r?\n/).map(row => row.split('\t').map(c => c.trim()));
 
+        // Daftar kategori yang harus dicari di Google Sheets
         const cats = ["STORE", "ERO", "PROMOTOR", "FINANCING", "TECPROTEC", "INDOSAT", "TELKOMSEL", "DEVICE", "AKSESORIS", "TV"];
         let dataMap = {};
         let currentCat = "";
 
         rows.forEach(cols => {
-            const cleanCols = cols.filter(c => c !== "");
+            const cleanCols = cols.filter(c => c !== ""); 
             if (cleanCols.length === 0) return;
-            
-            const foundCat = cats.find(cat => cleanCols.some(cell => cell.toUpperCase() === cat));
-            if (foundCat) { currentCat = foundCat; dataMap[currentCat] = []; return; }
 
+            // Jika baris ini berisi nama kategori, set sebagai kategori aktif
+            const foundCat = cats.find(cat => cleanCols.some(cell => cell.toUpperCase() === cat));
+            if (foundCat) { 
+                currentCat = foundCat; 
+                dataMap[currentCat] = []; 
+                return; 
+            }
+
+            // Jika sedang di dalam kategori, ambil data Nama, Value, dan Achievement
             if (currentCat) {
                 const name = cleanCols[0];
                 const skip = ["NAMA", "TARGET", "VALUE", "QTY", "TOTAL", "ACHIEVEMENT"];
                 
-                // LOGIKA BARU: Cek apakah baris ini bukan header
                 if (!skip.some(s => name.toUpperCase() === s)) {
-                    let target = toNum(cleanCols[1]);
                     let value = 0;
+                    let target = toNum(cleanCols[1]);
                     let acv = "0%";
 
-                    // KHUSUS FINANCING: Ambil Value di index 2 (Kolom ke-3) dan ACV di index 4
+                    // LOGIKA KOLOM: Financing kolom ke-3 (index 2), lainnya kolom ke-4 (index 3)
                     if (currentCat === "FINANCING") {
                         value = toNum(cleanCols[2]);
                         acv = cleanCols[4] || "0%";
                     } else {
-                        // Tabel lainnya (STORE, ERO, dll) tetap di index 3
                         value = toNum(cleanCols[3]);
                         acv = cleanCols[5] || "0%";
                     }
@@ -79,115 +121,111 @@ async function init() {
             }
         });
 
+        // Gambar ulang semua kartu ke dalam grid
         const grid = document.getElementById('dashboard-grid');
-        grid.innerHTML = "";
+        grid.innerHTML = ""; 
+        
         Object.entries(dataMap).forEach(([title, items], idx) => {
             if (items.length > 0) {
+                // Urutkan dari ranking tertinggi ke terendah
                 items.sort((a, b) => b.value - a.value); 
                 renderCard(title, items, idx);
             }
         });
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Error Bro:", e); }
 }
 
+/**
+ * 8. FUNGSI MEMBUAT KARTU VISUAL (RENDER)
+ * Membuat HTML dan menggambar grafik menggunakan Chart.js
+ */
 function renderCard(title, items, idx) {
     const isStore = title === "STORE";
-    const isLargeData = items.length >= 7; 
+    const isPromotor = title === "PROMOTOR";
     const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4'];
     const themeColor = colors[idx % colors.length];
-    
-    const div = document.createElement('div');
-    div.className = `bg-[#161d31] p-8 rounded-[2.5rem] border border-white/10 shadow-2xl flex flex-col justify-between transition-all`;
     const id = `chart-${idx}`;
     
-    let content = `
+    const div = document.createElement('div');
+    div.className = `glass-card p-8 rounded-[2.5rem] flex flex-col justify-between`;
+    
+    // Susun isi kartu (Nama Kategori, Grafik, dan Top Ranking)
+    div.innerHTML = `
         <div>
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h2 class="font-black text-lg tracking-widest uppercase italic" style="color:${themeColor}">${title}</h2>
-                    <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">${isStore ? 'Summary' : (isLargeData ? 'Trend Line' : 'Ranking Bar')}</p>
-                </div>
-                <span class="text-xs bg-white/10 px-4 py-1 rounded-full text-white font-black">${items.length} PIC</span>
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="font-black text-sm tracking-widest uppercase italic text-white" style="border-left: 4px solid ${themeColor}; padding-left: 10px;">${title}</h2>
+                <span class="text-xs font-black" style="color:${themeColor}">${items[0].acv}</span>
             </div>
-            <div class="h-52 relative mb-4">
+
+            <div class="${isPromotor ? 'h-64' : 'h-48'} relative mb-6">
                 <canvas id="${id}"></canvas>
-                ${isStore ? `<div class="absolute inset-0 flex items-center justify-center flex-col">
-                    <span class="text-5xl font-black text-white">${items[0].acv}</span>
-                </div>` : ''}
+                
+                ${isStore ? `
+                <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
+                    <span class="text-4xl font-black text-white leading-none">${items[0].acv}</span>
+                    <span class="text-[10px] font-bold text-slate-500 uppercase mt-2 tracking-widest">Achieved</span>
+                </div>
+                ` : ''}
             </div>
-        </div>`;
 
-    if (isStore) {
-        content += `
-            <div class="mt-4 pt-6 border-t border-white/10 text-center">
-                <p class="text-2xl font-black text-white">Rp ${items[0].value.toLocaleString('id-ID')}</p>
-            </div>`;
-    } else {
-        content += `
-            <div class="mt-4 pt-6 border-t border-white/10 space-y-3">
+            <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
+                <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">${isStore ? 'Pencapaian Toko' : 'Ranking 1'}</p>
                 <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-400 uppercase italic">🏆 Teratas</span>
-                    <span class="text-sm font-black text-white uppercase tracking-tight">${items[0].name}</span>
+                    <span class="text-sm font-bold text-white truncate w-24">${items[0].name}</span>
+                    <span class="text-sm font-black text-blue-400 italic">Rp ${items[0].value.toLocaleString('id-ID')}</span>
                 </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs font-bold text-slate-400 uppercase italic">🔻 Terendah</span>
-                    <span class="text-sm font-black text-white uppercase tracking-tight">${items[items.length - 1].name}</span>
-                </div>
-            </div>`;
-    }
+            </div>
+        </div>
+    `;
 
-    div.innerHTML = content;
     document.getElementById('dashboard-grid').appendChild(div);
 
+    // 9. LOGIKA PEMILIHAN MODEL GRAFIK (CHART LOGIC)
     const ctx = document.getElementById(id).getContext('2d');
     
     if (isStore) {
-        const sisa = items[0].target > items[0].value ? items[0].target - items[0].value : 0;
+        // MODEL DONUT (Untuk Pencapaian Toko)
+        const percentVal = parseInt(items[0].acv) || 0;
         new Chart(ctx, {
             type: 'doughnut',
-            data: { datasets: [{ data: [items[0].value, sisa], backgroundColor: [themeColor, '#0a0e17'], borderWidth: 0 }] },
-            options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            data: { datasets: [{ data: [percentVal, percentVal > 100 ? 0 : 100 - percentVal], backgroundColor: [themeColor, '#1e2741'], borderWidth: 0, borderRadius: 10 }] },
+            options: { cutout: '85%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
-    } else if (isLargeData) {
-        const grad = ctx.createLinearGradient(0, 0, 0, 200);
-        grad.addColorStop(0, themeColor + '99');
-        grad.addColorStop(1, themeColor + '00');
+    } else if (isPromotor) {
+        // MODEL RADAR (Untuk Tim Promotor agar terlihat keren)
         new Chart(ctx, {
-            type: 'line',
+            type: 'radar',
             data: {
-                labels: items.map(i => i.name),
-                datasets: [{ data: items.map(i => i.value), borderColor: themeColor, backgroundColor: grad, fill: true, tension: 0.4, borderWidth: 4, pointRadius: 4, pointBackgroundColor: '#fff' }]
+                labels: items.slice(0, 6).map(i => i.name),
+                datasets: [{ label: 'Performa', data: items.slice(0, 6).map(i => i.value), backgroundColor: themeColor + '44', borderColor: themeColor, pointBackgroundColor: '#fff', borderWidth: 3 }]
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    x: { ticks: { color: '#ffffff', font: { size: 10, weight: 'bold' } }, grid: { display: false } },
-                    y: { display: false } 
-                }
+                scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { display: false }, pointLabels: { font: { size: 9, weight: 'bold' } } } },
+                plugins: { legend: { display: false } }
             }
         });
     } else {
+        // MODEL BAR HORIZONTAL (Untuk Kategori Umum)
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: items.map(i => i.name),
-                datasets: [{ data: items.map(i => i.value), backgroundColor: themeColor, borderRadius: 10, barThickness: 18 }]
+                labels: items.slice(0, 5).map(i => i.name),
+                datasets: [{ data: items.slice(0, 5).map(i => i.value), backgroundColor: themeColor, borderRadius: 6, barThickness: 12 }]
             },
             options: {
-                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
-                scales: {
-                    x: { display: false },
-                    y: { ticks: { color: '#ffffff', font: { size: 12, weight: '900' } }, grid: { display: false } }
-                }
+                scales: { x: { display: false }, y: { grid: { display: false }, border: { display: false }, ticks: { font: { size: 10, weight: 'bold' } } } }
             }
         });
     }
 }
 
+// 10. JALANKAN PROGRAM PERTAMA KALI SAAT HALAMAN DIBUKA
 init();
-setInterval(init, 30000);
 </script>
 </body>
 </html>

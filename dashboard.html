@@ -2,133 +2,174 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>M114 DASHBOARD - DEVIASI & INTERAKTIF</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M114 DASHBOARD - M FAISAL SADLI</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS: Mengatur tampilan kartu agar terlihat premium (Glassmorphism) */
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        /* Mengatur font global halaman */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
         
+        /* Desain kartu transparan (Glassmorphism) */
         .glass-card {
-            background: rgba(22, 29, 49, 0.7); /* Transparan gelap */
-            backdrop-filter: blur(10px);        /* Efek blur di belakang */
+            background: rgba(22, 29, 49, 0.7);
+            backdrop-filter: blur(10px);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 1px solid rgba(255,255,255,0.05);
         }
         
-        /* Efek saat kartu disentuh/mouse lewat */
+        /* Efek saat mouse mengarah ke kartu (Hover) */
         .glass-card:hover {
-            transform: translateY(-10px);      /* Kartu naik sedikit */
-            background: rgba(30, 39, 65, 0.9);  /* Warna jadi lebih cerah */
+            transform: translateY(-10px);
+            background: rgba(30, 39, 65, 0.9);
             box-shadow: 0 20px 40px rgba(0,0,0,0.4);
         }
+
+        /* Animasi saat tombol diklik */
+        .btn-interact:active { transform: scale(0.95); }
     </style>
 </head>
-<body class="bg-[#0b0f1a] text-slate-100 min-h-screen p-4 md:p-8">
+<body class="bg-[#0b0f1a] text-slate-100 min-h-screen p-4 md:p-8 flex flex-col">
 
-<div class="max-w-[1600px] mx-auto">
-    <header class="mb-12 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-[#161d31] to-[#1e2741] p-10 rounded-[3rem] border border-white/5 shadow-2xl">
-        <div>
-            <h1 class="text-5xl font-extrabold text-white italic tracking-tighter uppercase leading-none">📊 M114 MONITOR</h1>
-            <p class="text-blue-400 font-bold text-xs uppercase tracking-[0.3em] mt-3">Store Deviation & Achievement Tracker</p>
+<div class="max-w-[1600px] mx-auto w-full flex-grow">
+    <header class="mb-12 flex flex-col md:flex-row justify-between items-center bg-gradient-to-r from-[#161d31] to-[#1e2741] p-8 rounded-[2.5rem] border border-white/5 shadow-2xl gap-6">
+        <div class="flex items-center gap-6">
+            <a href="index.html" class="glass-card p-4 rounded-2xl hover:bg-blue-500/20 border border-white/10 group btn-interact" title="Kembali ke Beranda">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-400 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-white italic tracking-tighter uppercase leading-none">📊 M114 MONITOR</h1>
+                <p class="text-blue-400 font-bold text-[10px] uppercase tracking-[0.4em] mt-2">Intelligence Dashboard System</p>
+            </div>
         </div>
-        <button onclick="location.reload()" class="bg-white/5 hover:bg-white/10 px-8 py-4 rounded-2xl border border-white/10 font-bold uppercase text-xs tracking-widest active:scale-95 transition-all">
-            🔄 Refresh Data
-        </button>
+        
+        <div class="flex gap-3">
+            <button onclick="location.reload()" class="bg-blue-500/10 hover:bg-blue-500/20 px-6 py-4 rounded-2xl border border-blue-500/30 text-blue-400 font-bold uppercase text-xs tracking-widest btn-interact">
+                🔄 Refresh Data
+            </button>
+        </div>
     </header>
 
-    <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"></div>
+    <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-16"></div>
 </div>
 
+<footer class="max-w-[1600px] mx-auto w-full pb-10">
+    <div class="bg-[#161d31]/50 backdrop-blur-md border-t border-white/5 p-8 rounded-t-[3rem] flex flex-col md:flex-row justify-between items-center gap-8">
+        
+        <div class="text-center md:text-left">
+            <p class="text-white font-black italic text-xl tracking-tighter uppercase">M FAISAL SADLI</p>
+            <p class="text-slate-500 text-[10px] font-bold uppercase tracking-[0.3em] mt-1">Lead System Developer • M114 Monitoring</p>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <div class="hidden md:block text-right">
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest leading-none text-center">Platform Status</p>
+                <div class="flex items-center gap-2 justify-center mt-1">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
+                    <span class="text-xs font-black text-white uppercase tracking-tighter">Live Connection</span>
+                </div>
+            </div>
+            
+            <div class="h-10 w-[1px] bg-white/10 hidden md:block"></div>
+
+            <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                <p class="text-[9px] text-slate-500 font-bold uppercase tracking-widest leading-none">Engine Version</p>
+                <p class="text-xs font-black text-white uppercase tracking-tighter mt-1">v2.0 • 2024 Stable Build</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
 <script>
-// URL data Google Sheets (Format TSV)
+/** * KONFIGURASI DATA:
+ * Mengambil data dari Google Sheets yang di-export sebagai format TSV 
+ */
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/1bHyJlzlZfrWSTrcH-ZAqKqzhz7vNVvILxvPQW9AMihQ/export?format=tsv&gid=0";
 
-// Setting resolusi grafik agar tidak pecah
-Chart.defaults.devicePixelRatio = 2;
-Chart.defaults.color = '#94a3b8';
-
-// Fungsi merubah teks uang/angka menjadi nomor murni
+/** * Fungsi Pembersih Angka: 
+ * Mengubah string "Rp 1.000" menjadi angka murni 1000 agar bisa dihitung 
+ */
 function toNum(val) {
     if (!val) return 0;
     let cleaned = val.toString().replace(/[^\d]/g, "");
     return parseInt(cleaned) || 0;
 }
 
-// FUNGSI UTAMA: Mengambil dan mengolah data
+/** * Fungsi Utama (Init):
+ * Mengambil data dari internet dan memprosesnya menjadi kartu 
+ */
 async function init() {
     try {
+        // Mengambil file dari Google Sheets (t=timestamp digunakan untuk menghindari data lama/cache)
         const res = await fetch(SHEET_URL + "&t=" + new Date().getTime());
         const tsv = await res.text();
-        // Pecah data berdasarkan baris dan kolom tab
+        
+        // Memecah teks besar menjadi baris-baris data
         const rows = tsv.split(/\r?\n/).map(row => row.split('\t').map(c => c.trim()));
 
+        // Daftar kategori yang kita cari di dalam spreadsheet
         const cats = ["STORE", "ERO", "PROMOTOR", "FINANCING", "TECPROTEC", "INDOSAT", "TELKOMSEL", "DEVICE", "AKSESORIS", "TV"];
         let dataMap = {};
         let currentCat = "";
 
+        // Looping untuk membaca setiap baris data
         rows.forEach(cols => {
-            const cleanCols = cols.filter(c => c !== ""); 
+            const cleanCols = cols.filter(c => c !== "");
             if (cleanCols.length === 0) return;
 
-            // Cari apakah baris ini adalah nama kategori
+            // Jika menemukan nama kategori, buat grup baru
             const foundCat = cats.find(cat => cleanCols.some(cell => cell.toUpperCase() === cat));
             if (foundCat) { currentCat = foundCat; dataMap[currentCat] = []; return; }
 
+            // Jika di bawah kategori ada data personil/toko, simpan nilainya
             if (currentCat) {
                 const name = cleanCols[0];
                 const skip = ["NAMA", "TARGET", "VALUE", "QTY", "TOTAL", "ACHIEVEMENT"];
-                
-                // Pastikan bukan header tabel
                 if (!skip.some(s => name.toUpperCase() === s)) {
-                    let value = 0;
+                    // Logika pengambilan kolom (Financing berbeda kolom dengan yang lain)
+                    let value = (currentCat === "FINANCING") ? toNum(cleanCols[2]) : toNum(cleanCols[3]);
                     let target = toNum(cleanCols[1]);
-                    let acv = "0%";
-
-                    // LOGIKA KOLOM: Financing (Kolom 3), Lainnya (Kolom 4)
-                    if (currentCat === "FINANCING") {
-                        value = toNum(cleanCols[2]);
-                        acv = cleanCols[4] || "0%";
-                    } else {
-                        value = toNum(cleanCols[3]);
-                        acv = cleanCols[5] || "0%";
-                    }
-
-                    if (value > 0 || target > 0) {
-                        dataMap[currentCat].push({ name, value, target, acv });
-                    }
+                    let acv = (currentCat === "FINANCING") ? (cleanCols[4] || "0%") : (cleanCols[5] || "0%");
+                    if (value > 0 || target > 0) dataMap[currentCat].push({ name, value, target, acv });
                 }
             }
         });
 
-        // Gambar kartu ke layar
+        // Menampilkan hasil olah data ke layar HTML
         const grid = document.getElementById('dashboard-grid');
-        grid.innerHTML = "";
+        grid.innerHTML = ""; // Bersihkan loading
         Object.entries(dataMap).forEach(([title, items], idx) => {
             if (items.length > 0) {
-                items.sort((a, b) => b.value - a.value); // Urutkan juara 1
+                // Urutkan dari pencapaian paling besar ke kecil
+                items.sort((a, b) => b.value - a.value); 
                 renderCard(title, items, idx);
             }
         });
-    } catch (e) { console.error(e); }
+    } catch (e) { console.error("Error Sistem:", e); }
 }
 
-// FUNGSI RENDER: Membuat kartu dan grafik
+/** * Fungsi Render: 
+ * Membuat tampilan kartu dan menentukan jenis grafik yang cocok 
+ */
 function renderCard(title, items, idx) {
     const isStore = title === "STORE";
     const isPromotor = title === "PROMOTOR";
     const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4'];
-    const themeColor = colors[idx % colors.length];
+    const themeColor = colors[idx % colors.length]; // Pilih warna otomatis
     const id = `chart-${idx}`;
     
-    // HITUNG DEVIASI (Sisa Target)
+    // Logika perhitungan Deviasi (Sisa Target)
     const targetValue = items[0].target;
     const achievedValue = items[0].value;
     const deviasi = targetValue - achievedValue;
-    const isLunas = deviasi <= 0; // Cek apakah target sudah lewat
+    const isLunas = deviasi <= 0; // Benar jika sudah capai target
 
+    // Membuat struktur HTML untuk satu kartu
     const div = document.createElement('div');
     div.className = `glass-card p-8 rounded-[2.5rem] flex flex-col justify-between`;
     
@@ -138,86 +179,60 @@ function renderCard(title, items, idx) {
                 <h2 class="font-black text-sm tracking-widest uppercase italic text-white" style="border-left: 4px solid ${themeColor}; padding-left: 10px;">${title}</h2>
                 <span class="text-xs font-black" style="color:${themeColor}">${items[0].acv}</span>
             </div>
-
             <div class="${isPromotor ? 'h-64' : 'h-48'} relative mb-6">
                 <canvas id="${id}"></canvas>
-                ${isStore ? `
-                <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-                    <span class="text-4xl font-black text-white leading-none">${items[0].acv}</span>
-                    <span class="text-[10px] font-bold text-slate-500 uppercase mt-2 tracking-widest">Achieved</span>
-                </div>` : ''}
             </div>
-
-            <div class="space-y-3">
+            <div class="space-y-3 text-xs">
                 <div class="bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">${isStore ? 'Total Achievement' : 'Top Ranking'}</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-bold text-white truncate w-24">${items[0].name}</span>
-                        <span class="text-sm font-black text-blue-400 italic">Rp ${achievedValue.toLocaleString('id-ID')}</span>
+                    <p class="text-[9px] text-slate-500 font-bold uppercase mb-1">Top Performance</p>
+                    <div class="flex justify-between items-center font-bold">
+                        <span class="text-white truncate w-32">${items[0].name}</span>
+                        <span class="text-blue-400">Rp ${achievedValue.toLocaleString('id-ID')}</span>
                     </div>
                 </div>
-
                 ${isStore ? `
                 <div class="p-4 rounded-2xl border ${isLunas ? 'bg-green-500/10 border-green-500/20' : 'bg-red-500/10 border-red-500/20'}">
-                    <p class="text-[9px] ${isLunas ? 'text-green-500' : 'text-red-500'} font-bold uppercase mb-1">Deviation (Sisa Target)</p>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-black ${isLunas ? 'text-green-400' : 'text-red-400'}">
-                            ${isLunas ? 'GOAL ACHIEVED! 🏆' : 'Rp -' + deviasi.toLocaleString('id-ID')}
-                        </span>
-                    </div>
-                </div>
-                ` : ''}
+                    <p class="text-[9px] ${isLunas ? 'text-green-500' : 'text-red-500'} font-bold uppercase mb-1">Gap to Target</p>
+                    <p class="font-black ${isLunas ? 'text-green-400' : 'text-red-400'}">
+                        ${isLunas ? 'GOAL ACHIEVED! 🏆' : 'Rp -' + deviasi.toLocaleString('id-ID')}
+                    </p>
+                </div>` : ''}
             </div>
-        </div>
-    `;
+        </div>`;
 
     document.getElementById('dashboard-grid').appendChild(div);
-
     const ctx = document.getElementById(id).getContext('2d');
     
-    // PEMILIHAN JENIS GRAFIK
+    // PEMILIHAN GRAFIK: Lingkaran (Store), Radar (Promotor), atau Batang (Lainnya)
     if (isStore) {
-        // Lingkaran untuk Store
         const percentVal = parseInt(items[0].acv) || 0;
         new Chart(ctx, {
             type: 'doughnut',
             data: { datasets: [{ data: [percentVal, percentVal >= 100 ? 0 : 100 - percentVal], backgroundColor: [themeColor, '#1e2741'], borderWidth: 0, borderRadius: 10 }] },
-            options: { cutout: '85%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            options: { cutout: '85%', plugins: { legend: { display: false } } }
         });
     } else if (isPromotor) {
-        // Radar/Laba-laba untuk Promotor
         new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: items.slice(0, 6).map(i => i.name),
-                datasets: [{ label: 'Value', data: items.slice(0, 6).map(i => i.value), backgroundColor: themeColor + '44', borderColor: themeColor, pointBackgroundColor: '#fff', borderWidth: 3 }]
+                datasets: [{ data: items.slice(0, 6).map(i => i.value), backgroundColor: themeColor + '44', borderColor: themeColor, borderWidth: 2 }]
             },
-            options: {
-                responsive: true, maintainAspectRatio: false,
-                scales: { r: { angleLines: { color: 'rgba(255,255,255,0.1)' }, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { display: false } } },
-                plugins: { legend: { display: false } }
-            }
+            options: { scales: { r: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { display: false } } }, plugins: { legend: { display: false } } }
         });
     } else {
-        // Batang Horizontal untuk yang lainnya
         new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: items.slice(0, 5).map(i => i.name),
-                datasets: [{ data: items.slice(0, 5).map(i => i.value), backgroundColor: themeColor, borderRadius: 6 }]
+                datasets: [{ data: items.slice(0, 5).map(i => i.value), backgroundColor: themeColor, borderRadius: 5 }]
             },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
-                scales: { x: { display: false }, y: { grid: { display: false }, border: { display: false } } }
-            }
+            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { grid: { display: false }, ticks: { color: '#fff' } } } }
         });
     }
 }
 
-// Jalankan fungsi saat halaman dibuka
+// Menjalankan fungsi init saat browser selesai memuat halaman
 init();
 </script>
 </body>

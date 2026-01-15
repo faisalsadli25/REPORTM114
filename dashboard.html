@@ -1,154 +1,193 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>DASHBOARD M114 - OPTIMIZED</title>
+    <meta charset="UTF-8">
+    <title>M114 DASHBOARD - HD MULTI-STYLE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        canvas { max-height: 400px; }
-    </style>
 </head>
+<body class="bg-[#0b0f1a] text-slate-100 min-h-screen p-4 md:p-8">
 
-<body class="bg-gradient-to-br from-slate-900 to-red-900 min-h-screen text-white font-sans">
+<div class="max-w-[1600px] mx-auto">
+    <header class="mb-10 flex flex-col md:flex-row justify-between items-center bg-[#161d31] p-8 rounded-[2.5rem] border border-white/10 shadow-2xl gap-4">
+        <div>
+            <h1 class="text-4xl font-black text-white italic tracking-tighter uppercase leading-none">📊 M114 SMART MONITOR</h1>
+            <p class="text-blue-400 font-bold text-sm uppercase tracking-[0.3em] mt-2">High Definition • Dynamic Visuals</p>
+        </div>
+        <div id="status-text" class="text-xs font-mono text-green-400 bg-green-500/10 px-6 py-3 rounded-full border border-green-500/30">
+            SYSTEM ONLINE
+        </div>
+    </header>
 
-<header class="p-8 text-center">
-    <h1 class="text-3xl font-bold tracking-widest text-white drop-shadow-lg">📊 DASHBOARD M114</h1>
-    <p class="text-slate-300 text-sm mt-2">Update: Conditional Layout Rendering</p>
-</header>
-
-<main class="max-w-6xl mx-auto p-4 space-y-12 pb-20">
-    <section id="STORE" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
-    <section id="ERO" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
-    <section id="PROMOTOR" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
-    <section id="FINANCING" class="bg-black/20 p-6 rounded-3xl backdrop-blur-sm border border-white/5"></section>
-
-    <div class="text-center pt-8">
-        <a href="index.html" class="inline-block px-8 py-3 bg-white text-slate-900 rounded-full font-bold hover:bg-slate-200 transition-all shadow-xl">
-            ← Kembali ke Report
-        </a>
-    </div>
-</main>
+    <div id="dashboard-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        </div>
+</div>
 
 <script>
-const CSV_URL = "https://docs.google.com/spreadsheets/d/1UMVGCANWjOQlwGFzi47POm7dVEtYOmAq4jz7O2rol5o/export?format=tsv";
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/1bHyJlzlZfrWSTrcH-ZAqKqzhz7vNVvILxvPQW9AMihQ/export?format=tsv&gid=0";
 
-/* ================= UTIL ================= */
-function parseIDR(val) {
-    if (!val) return null;
-    const cleaned = val.toString().replace(/Rp/gi, "").replace(/\s/g, "").replace(/\./g, "").replace(/,/g, "");
-    const num = Number(cleaned);
-    return isNaN(num) ? null : num;
+Chart.defaults.devicePixelRatio = 2; 
+Chart.defaults.font.family = "'Inter', 'ui-sans-serif', 'system-ui'";
+
+function toNum(val) {
+    if (!val) return 0;
+    let cleaned = val.toString().replace(/[^\d]/g, "");
+    return parseInt(cleaned) || 0;
 }
 
-const sections = { STORE: [], ERO: [], PROMOTOR: [], FINANCING: [] };
+async function init() {
+    try {
+        const res = await fetch(SHEET_URL + "&t=" + new Date().getTime());
+        const tsv = await res.text();
+        const rows = tsv.split(/\r?\n/).map(row => row.split('\t').map(c => c.trim()));
 
-/* ================= DATA FETCHING ================= */
-fetch(CSV_URL)
-.then(r => r.text())
-.then(text => {
-    const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
-    let mode = "";
+        const cats = ["STORE", "ERO", "PROMOTOR", "FINANCING", "TECPROTEC", "INDOSAT", "TELKOMSEL", "DEVICE", "AKSESORIS", "TV"];
+        let dataMap = {};
+        let currentCat = "";
 
-    lines.forEach(line => {
-        const c = line.split("\t");
-        const key = c[0]?.toUpperCase();
+        rows.forEach(cols => {
+            const cleanCols = cols.filter(c => c !== "");
+            if (cleanCols.length === 0) return;
+            
+            const foundCat = cats.find(cat => cleanCols.some(cell => cell.toUpperCase() === cat));
+            if (foundCat) { currentCat = foundCat; dataMap[currentCat] = []; return; }
 
-        if (sections.hasOwnProperty(key)) {
-            mode = key;
-            return;
-        }
+            if (currentCat) {
+                const name = cleanCols[0];
+                const skip = ["NAMA", "TARGET", "VALUE", "QTY", "TOTAL", "ACHIEVEMENT"];
+                
+                // LOGIKA BARU: Cek apakah baris ini bukan header
+                if (!skip.some(s => name.toUpperCase() === s)) {
+                    let target = toNum(cleanCols[1]);
+                    let value = 0;
+                    let acv = "0%";
 
-        if (!mode) return;
+                    // KHUSUS FINANCING: Ambil Value di index 2 (Kolom ke-3) dan ACV di index 4
+                    if (currentCat === "FINANCING") {
+                        value = toNum(cleanCols[2]);
+                        acv = cleanCols[4] || "0%";
+                    } else {
+                        // Tabel lainnya (STORE, ERO, dll) tetap di index 3
+                        value = toNum(cleanCols[3]);
+                        acv = cleanCols[5] || "0%";
+                    }
 
-        let rawValue = (mode === "FINANCING") ? c[2] : c[3];
-        const name = c[0]?.trim();
-        const value = parseIDR(rawValue);
+                    if (value > 0 || target > 0) {
+                        dataMap[currentCat].push({ name, value, target, acv });
+                    }
+                }
+            }
+        });
 
-        if (!name || value === null || value === 0) return;
-        const ignoreList = ["total", "target", "value", "achievement", "nama"];
-        if (ignoreList.some(word => name.toLowerCase().includes(word))) return;
+        const grid = document.getElementById('dashboard-grid');
+        grid.innerHTML = "";
+        Object.entries(dataMap).forEach(([title, items], idx) => {
+            if (items.length > 0) {
+                items.sort((a, b) => b.value - a.value); 
+                renderCard(title, items, idx);
+            }
+        });
+    } catch (e) { console.error(e); }
+}
 
-        sections[mode].push({ name, value });
-    });
-
-    renderSection("STORE", "#60a5fa"); 
-    renderSection("ERO", "#4ade80");   
-    renderSection("PROMOTOR", "#facc15"); 
-    renderSection("FINANCING", "#c084fc");
-});
-
-/* ================= RENDER FUNCTION ================= */
-function renderSection(type, colorHex) {
-    const data = [...sections[type]];
-    if (!data.length) return;
-
-    const container = document.getElementById(type);
+function renderCard(title, items, idx) {
+    const isStore = title === "STORE";
+    const isLargeData = items.length >= 7; 
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#a855f7', '#06b6d4'];
+    const themeColor = colors[idx % colors.length];
     
-    // LOGIKA KHUSUS: Jika data hanya 1 (seperti STORE)
-    if (data.length === 1) {
-        container.innerHTML = `
-            <h2 class="font-black text-2xl mb-6 tracking-tight" style="color: ${colorHex}">${type}</h2>
-            <div class="bg-white/5 border border-white/10 p-8 rounded-2xl flex flex-col items-center text-center">
-                <p class="text-slate-400 text-sm uppercase font-bold mb-2 tracking-widest">${data[0].name}</p>
-                <p class="text-4xl md:text-5xl font-black" style="color: ${colorHex}">Rp ${data[0].value.toLocaleString("id-ID")}</p>
+    const div = document.createElement('div');
+    div.className = `bg-[#161d31] p-8 rounded-[2.5rem] border border-white/10 shadow-2xl flex flex-col justify-between transition-all`;
+    const id = `chart-${idx}`;
+    
+    let content = `
+        <div>
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="font-black text-lg tracking-widest uppercase italic" style="color:${themeColor}">${title}</h2>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase mt-1">${isStore ? 'Summary' : (isLargeData ? 'Trend Line' : 'Ranking Bar')}</p>
+                </div>
+                <span class="text-xs bg-white/10 px-4 py-1 rounded-full text-white font-black">${items.length} PIC</span>
             </div>
-        `;
-        return; // Berhenti di sini, tidak menggambar chart
+            <div class="h-52 relative mb-4">
+                <canvas id="${id}"></canvas>
+                ${isStore ? `<div class="absolute inset-0 flex items-center justify-center flex-col">
+                    <span class="text-5xl font-black text-white">${items[0].acv}</span>
+                </div>` : ''}
+            </div>
+        </div>`;
+
+    if (isStore) {
+        content += `
+            <div class="mt-4 pt-6 border-t border-white/10 text-center">
+                <p class="text-2xl font-black text-white">Rp ${items[0].value.toLocaleString('id-ID')}</p>
+            </div>`;
+    } else {
+        content += `
+            <div class="mt-4 pt-6 border-t border-white/10 space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-400 uppercase italic">🏆 Teratas</span>
+                    <span class="text-sm font-black text-white uppercase tracking-tight">${items[0].name}</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-slate-400 uppercase italic">🔻 Terendah</span>
+                    <span class="text-sm font-black text-white uppercase tracking-tight">${items[items.length - 1].name}</span>
+                </div>
+            </div>`;
     }
 
-    // LOGIKA UNTUK DATA BANYAK (ERO, PROMOTOR, FINANCING)
-    data.sort((a, b) => b.value - a.value);
-    const top = data[0];
-    const low = data[data.length - 1];
+    div.innerHTML = content;
+    document.getElementById('dashboard-grid').appendChild(div);
 
-    container.innerHTML = `
-        <div class="flex items-center justify-between mb-6">
-            <h2 class="font-black text-2xl tracking-tight" style="color: ${colorHex}">${type}</h2>
-            <span class="bg-white/10 px-3 py-1 rounded-lg text-xs font-mono uppercase">Ranked</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                <p class="text-slate-400 text-xs uppercase font-bold mb-1">Peringkat 1 🔥</p>
-                <p class="text-xl font-bold truncate">${top.name}</p>
-                <p class="text-2xl font-black mt-1" style="color: ${colorHex}">Rp ${top.value.toLocaleString("id-ID")}</p>
-            </div>
-            <div class="bg-white/5 border border-white/10 p-5 rounded-2xl">
-                <p class="text-slate-400 text-xs uppercase font-bold mb-1">Peringkat Terakhir ❄️</p>
-                <p class="text-xl font-bold truncate">${low.name}</p>
-                <p class="text-2xl font-black mt-1 text-slate-300">Rp ${low.value.toLocaleString("id-ID")}</p>
-            </div>
-        </div>
-
-        <div class="relative h-[300px] w-full">
-            <canvas id="${type}Chart"></canvas>
-        </div>
-    `;
-
-    new Chart(document.getElementById(type + "Chart"), {
-        type: "bar",
-        data: {
-            labels: data.map(d => d.name),
-            datasets: [{
-                data: data.map(d => d.value),
-                backgroundColor: colorHex,
-                borderRadius: 10,
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
-            scales: {
-                x: { grid: { color: "rgba(255,255,255,0.05)" }, ticks: { color: "#94a3b8" } },
-                y: { grid: { display: false }, ticks: { color: "#f8fafc" } }
+    const ctx = document.getElementById(id).getContext('2d');
+    
+    if (isStore) {
+        const sisa = items[0].target > items[0].value ? items[0].target - items[0].value : 0;
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: { datasets: [{ data: [items[0].value, sisa], backgroundColor: [themeColor, '#0a0e17'], borderWidth: 0 }] },
+            options: { cutout: '80%', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+        });
+    } else if (isLargeData) {
+        const grad = ctx.createLinearGradient(0, 0, 0, 200);
+        grad.addColorStop(0, themeColor + '99');
+        grad.addColorStop(1, themeColor + '00');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: items.map(i => i.name),
+                datasets: [{ data: items.map(i => i.value), borderColor: themeColor, backgroundColor: grad, fill: true, tension: 0.4, borderWidth: 4, pointRadius: 4, pointBackgroundColor: '#fff' }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { ticks: { color: '#ffffff', font: { size: 10, weight: 'bold' } }, grid: { display: false } },
+                    y: { display: false } 
+                }
             }
-        }
-    });
+        });
+    } else {
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: items.map(i => i.name),
+                datasets: [{ data: items.map(i => i.value), backgroundColor: themeColor, borderRadius: 10, barThickness: 18 }]
+            },
+            options: {
+                indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: { ticks: { color: '#ffffff', font: { size: 12, weight: '900' } }, grid: { display: false } }
+                }
+            }
+        });
+    }
 }
+
+init();
+setInterval(init, 30000);
 </script>
 </body>
 </html>

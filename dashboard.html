@@ -68,7 +68,7 @@ async function init() {
         const tsv = await res.text();
         const rows = tsv.split(/\r?\n/).map(row => row.split('\t').map(c => c.trim()));
 
-        const cats = ["STORE", "ERO", "PROMOTOR", "FINANCING", "TECPROTEC", "INDOSAT", "TELKOMSEL", "DEVICE", "AKSESORIS", "TV"];
+        const cats = ["STORE", "ERO", "PROMOTOR", "FINANCING", "TECPROTEC", "INDOSAT", "XL", "DEVICE", "AKSESORIS", "TV"];
         let dataMap = {};
         let currentCat = "";
 
@@ -216,3 +216,4 @@ init();
 </script>
 </body>
 </html>
+
